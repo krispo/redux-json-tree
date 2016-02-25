@@ -2,19 +2,81 @@
 <html>
 <head>
   <title>Redux-Json-Tree</title>
+
+  <!-- Include Yarrow -->
+  <link href="//rawgit.com/krispo/yarrow/master/build/yarrow.css" rel="stylesheet" type="text/css"/>
+  <script src="//d3js.org/d3-selection.v0.6.min.js"></script>
+  <script src="//d3js.org/d3-selection-multi.v0.2.min.js"></script>
+  <script src="//rawgit.com/krispo/svg-path-utils/master/build/svg-path-utils.min.js"></script>
+  <script src="//rawgit.com/krispo/yarrow/master/build/yarrow.js"></script>
+  <style>
+    .yarrow .arrow { stroke: rgba(255, 90, 0, 1); stroke-width: 6px;}
+    .yarrow .arrow.text {stroke: gray; stroke-width: 1px;}
+  </style>
+
+  <!-- Include Bundle -->
   <link rel="stylesheet" href="bundle.css"/>
   <style>
     table { width: 100%; padding: 10px; font-family: monospace;}
     table th {text-align: left;}
-    table thead tr th:first-child { width: 40%; min-width: 300px; }
-    table tbody tr td:first-child { width: 40%; min-width: 300px;}
+    table thead tr th:first-child { width: 40%; min-width: 350px; }
+    table tbody tr td:first-child { width: 40%; min-width: 350px;}
     table tr td { vertical-align: top; }
     .redux-json-tree { padding-top: 12px; }
   </style>
+
 </head>
 <body>
 <div style="width:100%;text-align: center"><a href="https://github.com/krispo/redux-json-tree">Github</a></div>
 <div id="root"></div>
 <script src="bundle.js"></script>
+
+<script>
+  // Yarrow
+  document.addEventListener('DOMContentLoaded', function main() {
+    var yar = new yarrow.Yarrow();
+    var x = 350//Math.max(900, window.innerWidth)*0.4 - 20
+        , y = 50
+        , dx = -180
+        , dy = 100
+        ;
+    var ar1 = yar.arrow({
+      x: x,
+      y: y,
+      dx: 170 - x,
+      dy: dy,
+      text: 'Please, edit this tree',
+      textReverseDirection: function(_, u){
+        return _.dx < 0;
+      },
+      textStartOffset: function(_, u){
+        return _.textReverseDirection ? 130 : 10
+      },
+      duration: 1000
+    });
+    var ar2 = yar.arrow({
+      x: 170,
+      y: 200,
+      dx: Math.max(900, window.innerWidth)*0.4-170,
+      dy: 50,
+      text: 'Redux store is also changed',
+      textReverseDirection: function(_, u){
+        return _.dx < 0;
+      },
+      textStartOffset: function(_, u){
+        return _.textReverseDirection ? 130 : 10
+      },
+      duration: 1000
+    });
+
+    setTimeout(function(){
+      ar1.render().dispose(5000, 10000);
+    }, 500)
+    setTimeout(function(){
+      ar2.render().dispose(5000, 10000);
+    }, 3000)
+  });
+
+</script>
 </body>
 </html>
