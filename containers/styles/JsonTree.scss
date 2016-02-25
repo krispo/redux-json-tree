@@ -1,0 +1,20 @@
+.redux-json-tree {
+  ul {
+    margin: 0;
+    list-style: none;
+    padding-left: 1em;
+  }
+  .node {
+    display: initial;
+  }
+  .leaf {
+    input {
+      width: 50px;
+      height: 12px;
+    }
+  }
+}
+.hidden {
+  display: none;
+  visibility: hidden;
+}
