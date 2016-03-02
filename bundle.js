@@ -64,9 +64,15 @@
 
 	var _data = __webpack_require__(185);
 
+	var _simplifr = __webpack_require__(186);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var store = (0, _configureStore2.default)(_data.data);
+	var allData = {
+	  data: _data.data,
+	  simplifiedData: (0, _simplifr.simplify)(_data.data, '.')
+	};
+	var store = (0, _configureStore2.default)(allData);
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -21165,53 +21171,19 @@
 	      update(path, e.target.value);
 	    }
 	  }, {
-	    key: 'type',
-	    value: function type() {
-	      var val = this.props.data;
-	      if (val === null) return 'null';else if (val === undefined) return 'undefined';else if (val.constructor === Array) return 'array';else if (val.constructor === Object) return 'object';else if (val.constructor === String) return 'string';else if (val.constructor === Number) return 'number';else if (val.constructor === Boolean) return 'boolean';else if (val.constructor === Function) return 'function';else return 'object';
-	    }
-	  }, {
-	    key: 'renderObject',
-	    value: function renderObject() {
-	      var list = [];
+	    key: 'renderNode',
+	    value: function renderNode() {
 	      var _props2 = this.props;
 	      var data = _props2.data;
-	      var path = _props2.path;
 	      var level = _props2.level;
 
-	      for (var key in data) {
-	        list.push(_react2.default.createElement(
-	          'li',
-	          null,
-	          _react2.default.createElement(ConnectedJsonTree, {
-	            path: path + '_' + key,
-	            level: level + 1,
-	            k: key
-	          })
-	        ));
-	      }
-	      return _react2.default.createElement(
-	        'ul',
-	        null,
-	        list
-	      );
-	    }
-	  }, {
-	    key: 'renderArray',
-	    value: function renderArray() {
-	      var _props3 = this.props;
-	      var data = _props3.data;
-	      var path = _props3.path;
-	      var level = _props3.level;
-
-	      var list = data.map(function (v, i) {
+	      var list = data.childs.map(function (path) {
 	        return _react2.default.createElement(
 	          'li',
 	          null,
 	          _react2.default.createElement(ConnectedJsonTree, {
-	            path: path + '_' + i,
-	            level: level + 1,
-	            k: i
+	            path: path,
+	            level: level + 1
 	          })
 	        );
 	      });
@@ -21224,12 +21196,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props4 = this.props;
-	      var data = _props4.data;
-	      var k = _props4.k;
-	      var level = _props4.level;
+	      var _props3 = this.props;
+	      var data = _props3.data;
+	      var k = _props3.k;
+	      var level = _props3.level;
 
-	      var t = this.type();
+	      var t = data.type;
 	      var nodeClass = cn({
 	        'redux-json-tree': !this.props.level,
 	        'node': t === 'object' || t === 'array',
@@ -21251,7 +21223,7 @@
 	            null,
 	            '{'
 	          ),
-	          this.state.collapsed ? '' : this.renderObject(),
+	          this.state.collapsed ? '' : this.renderNode(),
 	          _react2.default.createElement(
 	            'span',
 	            null,
@@ -21273,7 +21245,7 @@
 	            null,
 	            '['
 	          ),
-	          this.state.collapsed ? '' : this.renderArray(),
+	          this.state.collapsed ? '' : this.renderNode(),
 	          _react2.default.createElement(
 	            'span',
 	            null,
@@ -21312,22 +21284,12 @@
 
 	function mapStateToProps(state, props) {
 	  if (typeof props.path === 'undefined' || props.path === 'root') return {
-	    data: state
+	    data: state.simplifiedData['root']
 	  };
-
-	  function deep(cs, p) {
-	    if (p.length > 1) {
-	      var key = p.shift();
-	      return deep(cs[key], p);
-	    } else {
-	      return {
-	        data: cs[p.shift()]
-	      };
-	    }
-	  }
-	  //exclude root path
-	  var path_sequence = props.path.split('_').slice(1);
-	  return deep(state, path_sequence);
+	  return {
+	    data: state.simplifiedData[props.path],
+	    k: props.path.split('.').pop()
+	  };
 	}
 
 	var ConnectedJsonTree = (0, _reactRedux.connect)(mapStateToProps, actions)(JsonTree);
@@ -21458,7 +21420,7 @@
 	        _react2.default.createElement(
 	          'pre',
 	          null,
-	          JSON.stringify(this.props.data, null, 2)
+	          JSON.stringify(this.props.state.data, null, 2)
 	        )
 	      );
 	    }
@@ -21468,7 +21430,7 @@
 	}(_react.Component);
 
 	function mapStateToProps(state, props) {
-	  return { data: state };
+	  return { state: state };
 	}
 
 	var ConnectedJsonView = (0, _reactRedux.connect)(mapStateToProps)(JsonView);
@@ -21528,10 +21490,15 @@
 	    return state;
 	  }
 
-	  return Object.assign({}, state, node(state, action));
+	  return Object.assign({}, state, {
+	    data: node(state.data, action),
+	    simplifiedData: Object.assign({}, state.simplifiedData, _defineProperty({}, action.path, isNaN(+action.value) ? action.value : +action.value))
+	  });
 	};
 
 	var _actions = __webpack_require__(179);
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function node(state, action) {
 	  switch (action.type) {
@@ -21548,7 +21515,7 @@
 	            }
 	          };
 
-	          var path_sequence = action.path.split('_').slice(1);
+	          var path_sequence = action.path.split('.').slice(1);
 	          deep(state, path_sequence);
 	          return {
 	            v: state
@@ -21592,19 +21559,85 @@
 	      text: 'hi'
 	    }
 	  },
-	  arrayOfObjects: generate(5, function (i) {
+	  arrayOfObjects: generate(2, function (i) {
 	    return { x: i, y: i * i };
 	  }),
-	  arrayOfComplexObjects: generate(5, function (i) {
+	  arrayOfComplexObjects: generate(2, function (i) {
 	    return {
 	      x: i,
-	      y: generate(5, function (i) {
-	        return { x: 'key_' + i, y: i * i * i };
+	      y: generate(2, function (i) {
+	        return { x: 'value' + i, y: i * i * i };
 	      })
 	    };
 	  }),
 	  largeArray: generate(1000)
+	  //largeArray: generate(1000, function(i){
+	  //  return {
+	  //    x: i,
+	  //    y: 2*i
+	  //  }
+	  //})
 	};
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	(function (global, factory) {
+	   true ? factory(exports) :
+	  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	  (factory((global.simplifr = global.simplifr || {})));
+	}(this, function (exports) { 'use strict';
+
+	  function simplify(json, dilimiter){
+	    var data = {};
+
+	    dilimiter = dilimiter || '_';
+
+	    dive(json, 'root');
+
+	    return data;
+
+	    function dive(json, path){
+	      data[path] = {
+	        type: 'object',
+	        childs: []
+	      };
+
+	      if (isArray(json)) {
+	        data[path].type = 'array';
+	        for (var i = -1, l = json.length; ++i < l;) {
+	          var next = path + dilimiter + i;
+	          data[path].childs.push(next);
+	          dive(json[i], next);
+	        }
+	      }
+	      else if (isObject(json)) {
+	        for (var key in json) {
+	          if (json.hasOwnProperty(key)) {
+	            var next = path + dilimiter + key;
+	            data[path].childs.push(next);
+	            dive(json[key], next);
+	          }
+	        }
+	      }
+	      else data[path] = json;
+
+	      return data;
+	    }
+	  }
+
+	  function isArray(_) {
+	    return Object.prototype.toString.call(_) === '[object Array]';
+	  }
+
+	  function isObject(_) {
+	    return Object.prototype.toString.call(_) === '[object Object]';
+	  }
+
+	  exports.simplify = simplify;
+
+	}));
 
 /***/ }
 /******/ ]);
