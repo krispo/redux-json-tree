@@ -12,7 +12,7 @@ function node(state, action){
           return cs[p.shift()] = v
         }
       }
-      const path_sequence = action.path.split('_').slice(1);
+      const path_sequence = action.path.split('.').slice(1);
       deep(state, path_sequence);
       return state
     }
@@ -26,5 +26,10 @@ export default function(state = {}, action){
     return state
   }
 
-  return Object.assign({}, state, node(state, action))
+  return Object.assign({}, state, {
+    data: node(state.data, action),
+    simplifiedData: Object.assign({}, state.simplifiedData, {
+      [action.path]: isNaN(+action.value) ? action.value : +action.value
+    })
+  })
 }

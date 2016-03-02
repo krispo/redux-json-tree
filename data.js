@@ -17,12 +17,18 @@ export const data = {
       text: 'hi'
     }
   },
-  arrayOfObjects: generate(5, (i) => { return { x: i, y: i*i } }),
-  arrayOfComplexObjects: generate(5, (i) => {
+  arrayOfObjects: generate(2, (i) => { return { x: i, y: i*i } }),
+  arrayOfComplexObjects: generate(2, (i) => {
     return {
       x: i,
-      y: generate(5, (i) => { return { x: 'key_'+i, y: i*i*i } })
+      y: generate(2, (i) => { return { x: 'value'+i, y: i*i*i } })
     }
   }),
   largeArray: generate(1000)
+  //largeArray: generate(1000, function(i){
+  //  return {
+  //    x: i,
+  //    y: 2*i
+  //  }
+  //})
 };

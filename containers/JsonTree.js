@@ -24,40 +24,14 @@ class JsonTree extends Component {
     const { update, path } = this.props
     update(path, e.target.value)
   }
-  type(){
-    const val = this.props.data;
-    if (val === null) return 'null'
-    else if (val === undefined) return 'undefined'
-    else if (val.constructor === Array) return 'array'
-    else if (val.constructor === Object) return 'object'
-    else if (val.constructor === String) return 'string'
-    else if (val.constructor === Number) return 'number'
-    else if (val.constructor === Boolean) return 'boolean'
-    else if (val.constructor === Function) return 'function'
-    else return 'object'
-  }
-  renderObject(){
-    const list = [];
-    const { data, path, level } = this.props
-    for (let key in data){
-      list.push(<li>
-        <ConnectedJsonTree
-          path={path + '_' + key}
-          level={level + 1}
-          k={key}
-        />
-      </li>);
-    }
-    return <ul>{ list }</ul>;
-  }
-  renderArray(){
-    const { data, path, level } = this.props
-    const list = data.map( (v, i) => {
+
+  renderNode(){
+    const { data, level } = this.props
+    const list = data.childs.map( (path) => {
       return <li>
         <ConnectedJsonTree
-          path={path + '_' + i}
+          path={path}
           level={level + 1}
-          k={i}
         />
       </li>
     });
@@ -65,7 +39,7 @@ class JsonTree extends Component {
   }
   render(){
     const { data, k, level } = this.props
-    const t = this.type();
+    const t = data.type;
     const nodeClass = cn({
       'redux-json-tree': !this.props.level,
       'node': t === 'object' || t === 'array',
@@ -77,7 +51,7 @@ class JsonTree extends Component {
         <div className={nodeClass}>
           <span onClick={this.click.bind(this)}>{ level ? k : 'root' }: </span>
           <span>{'{'}</span>
-            { this.state.collapsed ? '' : this.renderObject() }
+            { this.state.collapsed ? '' : this.renderNode() }
             <span>{'}'}</span>
         </div>
       )
@@ -87,7 +61,7 @@ class JsonTree extends Component {
         <div className={nodeClass}>
           <span onClick={this.click}>{ k }: </span>
           <span>{'['}</span>
-          { this.state.collapsed ? '' : this.renderArray() }
+          { this.state.collapsed ? '' : this.renderNode() }
           <span>{']'}</span>
         </div>
       )
@@ -116,22 +90,12 @@ JsonTree.defaultProps = {
 
 function mapStateToProps(state, props) {
   if (typeof props.path === 'undefined' || props.path === 'root') return {
-    data: state
+    data: state.simplifiedData['root']
   };
-
-  function deep(cs, p){
-    if (p.length>1){
-      const key = p.shift();
-      return deep(cs[key], p)
-    } else {
-      return {
-        data: cs[p.shift()]
-      };
-    }
+  return {
+    data: state.simplifiedData[props.path],
+    k: props.path.split('.').pop()
   }
-  //exclude root path
-  const path_sequence = props.path.split('_').slice(1)
-  return deep(state, path_sequence);
 }
 
 const ConnectedJsonTree = connect(mapStateToProps, actions)(JsonTree)

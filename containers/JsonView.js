@@ -8,14 +8,14 @@ class JsonView extends Component {
   render(){
     return (
       <div>
-        <pre>{JSON.stringify(this.props.data, null, 2)}</pre>
+        <pre>{JSON.stringify(this.props.state.data, null, 2)}</pre>
       </div>
     )
   }
 }
 
 function mapStateToProps(state, props) {
-  return { data: state }
+  return { state: state }
 }
 
 const ConnectedJsonView = connect(mapStateToProps)(JsonView)

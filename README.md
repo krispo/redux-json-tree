@@ -1,6 +1,6 @@
 # Redux-Json-Tree
 
-React/Redux `editable` JSON tree component for deeply nested data, with a single store. 
+React/Redux `editable` JSON tree component for deeply nested data, with a single store. It simulates a simple two-way data-binding mechanism. 
 Unlike [normalizr](https://github.com/gaearon/normalizr) principals, it works directly with a row JSON, and instead of `id`'s React component save a `path` to a specific field of JSON.
 For example, suppose we have a json:
 ```js
