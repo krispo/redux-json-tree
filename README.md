@@ -18,7 +18,7 @@ Eg, suppose we have a json:
 ```
 For the field `buz: [...]` consider a (path, description) pair as
 
-    ('root.foo.buz', { type: 'array', length: 2 })
+    ('root.foo.buz', { type: 'array', childs: [0, 1] })
  
 For the field `key2: 'v2'` consider 
 
