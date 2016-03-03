@@ -17,7 +17,7 @@
     "react-dom": "^0.14.2",
     "react-redux": "^4.4.0",
     "redux": "^3.2.1",
-    "simplifr": "^0.0.3"
+    "simplifr": "^0.0.4"
   },
   "devDependencies": {
     "babel-core": "^6.3.15",
