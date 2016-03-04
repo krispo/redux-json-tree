@@ -8,7 +8,7 @@ import {simplify} from 'simplifr'
 
 const allData = {
   data: data,
-  simplifiedData: simplify(data, '.')
+  simplifiedData: simplify(data)
 }
 const store = configureStore(allData)
 

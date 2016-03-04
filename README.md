@@ -2,8 +2,8 @@
 
 React/Redux `editable` JSON tree component for deeply nested data, with a single store. It simulates a simple two-way data-binding mechanism. 
 
-Unlike [normalization](https://github.com/gaearon/normalizr) according to a schema, we transform JSON into a flat structure that describe each field in terms of the (`path`, `description`). 
-Where `path` is a json query path to the field, and `description` is a description of the field, eg value, type, list of childs,.. Read more about [simplifr](https://github.com/krispo/simplifr).
+Unlike [normalization](https://github.com/gaearon/normalizr) according to a schema, we transform JSON into a flat structure that describe each node in terms of the (`path`, `description`). 
+Where `path` is a json query path of the node, and `description` is a description of the node, eg value, type, list of childs,.. Read more about [simplifr](https://github.com/krispo/simplifr).
 Eg, suppose we have a json:
 ```js
 {
@@ -16,11 +16,11 @@ Eg, suppose we have a json:
   }
 }
 ```
-For the field `buz: [...]` consider a (path, description) pair as
+For the node `buz: [...]` consider a (path, description) pair as
 
     ('root.foo.buz', { type: 'array', childs: [0, 1] })
  
-For the field `key2: 'v2'` consider 
+For the node `key2: 'v2'` we have 
 
     ('root.foo.buz.1.key2', 'v2')
 

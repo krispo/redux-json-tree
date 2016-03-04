@@ -1,4 +1,5 @@
 import { UPDATE } from '../actions'
+import {update} from 'simplifr'
 
 function node(state, action){
   switch (action.type) {
@@ -28,8 +29,10 @@ export default function(state = {}, action){
 
   return Object.assign({}, state, {
     data: node(state.data, action),
-    simplifiedData: Object.assign({}, state.simplifiedData, {
-      [action.path]: isNaN(+action.value) ? action.value : +action.value
-    })
+    simplifiedData: update(
+      Object.assign({}, state.simplifiedData),
+      action.path,
+      isNaN(+action.value) ? action.value : +action.value
+    )
   })
 }
