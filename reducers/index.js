@@ -1,21 +1,11 @@
 import { UPDATE } from '../actions'
-import {update} from 'simplifr'
+import {update, updateRaw} from 'simplifr'
 
 function node(state, action){
   switch (action.type) {
     case UPDATE: {
-      function deep(cs, p){
-        if (p.length>1){
-          const key = p.shift();
-          deep(cs[key], p)
-        } else {
-          const v = isNaN(+action.value) ? action.value : +action.value;
-          return cs[p.shift()] = v
-        }
-      }
-      const path_sequence = action.path.split('.').slice(1);
-      deep(state, path_sequence);
-      return state
+      const value = isNaN(+action.value) ? action.value : +action.value;
+      return updateRaw(state, action.path, value)
     }
     default:
       return state
