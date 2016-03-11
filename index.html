@@ -6,7 +6,6 @@
   <!-- Include Yarrow -->
   <link href="//rawgit.com/krispo/yarrow/master/build/yarrow.css" rel="stylesheet" type="text/css"/>
   <script src="//d3js.org/d3-selection.v0.6.min.js"></script>
-  <script src="//d3js.org/d3-selection-multi.v0.2.min.js"></script>
   <script src="//rawgit.com/krispo/svg-path-utils/master/build/svg-path-utils.min.js"></script>
   <script src="//rawgit.com/krispo/yarrow/master/build/yarrow.js"></script>
   <style>
@@ -19,8 +18,8 @@
   <style>
     table { width: 100%; padding: 10px; font-family: monospace;}
     table th {text-align: left;}
-    table thead tr th:first-child { width: 40%; min-width: 350px; }
-    table tbody tr td:first-child { width: 40%; min-width: 350px;}
+    table thead tr th:first-child { width: 450px; }
+    table tbody tr td:first-child { width: 450px;}
     table tr td { vertical-align: top; }
     .redux-json-tree { padding-top: 12px; }
   </style>
@@ -35,37 +34,25 @@
   // Yarrow
   document.addEventListener('DOMContentLoaded', function main() {
     var yar = new yarrow.Yarrow();
-    var x = 350//Math.max(900, window.innerWidth)*0.4 - 20
-        , y = 50
-        , dx = -180
-        , dy = 100
-        ;
     var ar1 = yar.arrow({
-      x: x,
-      y: y,
-      dx: 170 - x,
-      dy: dy,
+      x1: 400,
+      y1: 100,
+      x2: 170,
+      y2: 200,
+      d: function(_,u){ return u.join(u.M(_.w,0),u.L(_.w-130,0),u.L(0, _.h)); },
       text: 'Please, edit this tree',
-      textReverseDirection: function(_, u){
-        return _.dx < 0;
-      },
-      textStartOffset: function(_, u){
-        return _.textReverseDirection ? 130 : 10
-      },
+      textReverseDirection: true,
+      textStartOffset: 128,
       duration: 1000
     });
     var ar2 = yar.arrow({
-      x: 170,
-      y: 200,
-      dx: Math.max(900, window.innerWidth)*0.4-170,
-      dy: 50,
-      text: 'Redux store is also changed',
-      textReverseDirection: function(_, u){
-        return _.dx < 0;
-      },
-      textStartOffset: function(_, u){
-        return _.textReverseDirection ? 130 : 10
-      },
+      x1: 170,
+      y1: 250,
+      x2: 480,
+      y2: 200,
+      d: function(_,u){ return u.join(u.M(0, _.h),u.L(220, _.h),u.L(_.w, 0)); },
+      text: 'Watch, how Redux store changes',
+      textStartOffset: 2,
       duration: 1000
     });
 
