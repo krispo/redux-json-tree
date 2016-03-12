@@ -18,7 +18,7 @@ class App extends Component {
         </thead>
         <tbody>
         <tr>
-          <td><JsonTree /></td>
+          <td><JsonTree stateKey="simplifiedData"/></td>
           <td><JsonView /></td>
         </tr>
         </tbody>

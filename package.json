@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/krispo/redux-json-tree.git"
   },
-  "author": "Konstantin Skipor",
+  "author": "Tin Skipor",
   "license": "MIT",
   "dependencies": {
     "react": "^0.14.7",

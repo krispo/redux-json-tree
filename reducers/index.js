@@ -19,8 +19,8 @@ export default function(state = {}, action){
 
   return Object.assign({}, state, {
     data: node(state.data, action),
-    simplifiedData: update(
-      Object.assign({}, state.simplifiedData),
+    [action.stateKey]: update(
+      Object.assign({}, state[action.stateKey]),
       action.path,
       isNaN(+action.value) ? action.value : +action.value
     )

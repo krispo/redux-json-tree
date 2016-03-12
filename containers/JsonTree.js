@@ -21,8 +21,8 @@ class JsonTree extends Component {
     });
   }
   onChange(e){
-    const { update, path } = this.props
-    update(path, e.target.value)
+    const { update, path, stateKey } = this.props
+    update(path, e.target.value, stateKey)
   }
 
   renderNode(){
@@ -30,6 +30,7 @@ class JsonTree extends Component {
     const list = data.childs.map( (key) => {
       return <li>
         <ConnectedJsonTree
+          {...this.props}
           path={path + '.' + key}
           level={level + 1}
         />
@@ -91,11 +92,11 @@ JsonTree.defaultProps = {
 
 function mapStateToProps(state, props) {
   if (typeof props.path === 'undefined' || props.path === 'root') return {
-    data: state.simplifiedData['root']
+    data: state[props.stateKey]['root']
   };
   return {
-    data: state.simplifiedData[props.path],
-    k: props.path.split('.').pop()
+    data: state[props.stateKey][props.path],
+    k: props.path.split('.').pop(),
   }
 }
 
