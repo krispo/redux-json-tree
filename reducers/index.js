@@ -11,18 +11,22 @@ function node(state, action){
       return state
   }
 }
-export default function(state = {}, action){
+export function simplifiedReducer(state = {}, action){
   const { path } = action
   if (typeof path === 'undefined') {
     return state
   }
+  return Object.assign({}, state, update(
+    Object.assign({}, state),
+    action.path,
+    isNaN(+action.value) ? action.value : +action.value
+  ))
+}
 
-  return Object.assign({}, state, {
-    data: node(state.data, action),
-    [action.stateKey]: update(
-      Object.assign({}, state[action.stateKey]),
-      action.path,
-      isNaN(+action.value) ? action.value : +action.value
-    )
-  })
+export function rawReducer(state = {}, action){
+  const { path } = action
+  if (typeof path === 'undefined') {
+    return state
+  }
+  return Object.assign({}, state, node(state, action))
 }
