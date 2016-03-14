@@ -1,3 +1,3 @@
-export { default as DemoComponent } from './components'
-export { default as demoAction } from './actions'
-export { default as demoReducer } from './reducers'
+export { default as JsonTree } from './components/JsonTree'
+export { default as update } from './actions'
+export { simplifiedReducer, rawReducer } from './reducers'

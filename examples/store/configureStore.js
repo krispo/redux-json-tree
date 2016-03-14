@@ -1,5 +1,5 @@
 import { createStore, combineReducers } from 'redux'
-import {simplifiedReducer, rawReducer} from '../reducers'
+import {simplifiedReducer, rawReducer} from 'redux-json-tree'
 
 export default function configureStore(initialState){
   const store = createStore(

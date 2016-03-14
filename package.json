@@ -1,6 +1,6 @@
 {
   "name": "redux-json-tree",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React Redux editable JSON tree component for deeply nested data",
   "main": "./lib/index.js",
   "jsnext:main": "./src/index.js",
@@ -14,12 +14,11 @@
   ],
   "files": [
     "lib",
-    "src",
-    "examples"
+    "src"
   ],
   "scripts": {
     "prebuild": "rm -rf lib",
-    "build": "babel src --out-dir lib --presets react,es2015",
+    "build": "babel src --out-dir lib --presets react,es2015 && mkdir lib/styles && cp src/styles/JsonTree.scss lib/styles/JsonTree.scss ",
     "prepublish": "npm run build"
   },
   "repository": {
