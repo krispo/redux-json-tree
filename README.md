@@ -31,9 +31,10 @@ For the node `key2: 'v2'` we have
     npm install redux-json-tree
 
 ## Example
-Online example [here](http://krispo.github.io/redux-json-tree/)
+Online example [here](http://krispo.github.io/redux-json-tree/).
 
-Locally, 
+Locally,
+
 1. Clone the repo
 2. $cd examples
 3. $npm install
