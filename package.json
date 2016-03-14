@@ -1,6 +1,6 @@
 {
   "name": "redux-json-tree",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React Redux editable JSON tree component for deeply nested data",
   "main": "./lib/index.js",
   "jsnext:main": "./src/index.js",
@@ -32,7 +32,7 @@
     "react-dom": "^0.14.2",
     "react-redux": "^4.4.0",
     "redux": "^3.2.1",
-    "simplifr": "^0.0.7"
+    "simplifr": "^0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.3.15",

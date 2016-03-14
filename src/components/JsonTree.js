@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
 import classNames from 'classnames/bind'
-import css from './styles/JsonTree.scss'
+import css from '../styles/JsonTree.scss'
 
 const cn = classNames.bind(css)
 

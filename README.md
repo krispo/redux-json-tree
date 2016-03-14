@@ -1,5 +1,7 @@
 # Redux-Json-Tree
 
+[![NPM Version](http://img.shields.io/npm/v/redux-json-tree.svg?style=flat)](https://www.npmjs.org/package/redux-json-tree)
+
 React/Redux `editable` JSON tree component for deeply nested data, with a single store. It simulates a simple two-way data-binding mechanism. 
 
 Unlike [normalization](https://github.com/gaearon/normalizr) according to a schema, we transform JSON into a flat structure that describe each node in terms of the (`path`, `description`). 
@@ -27,16 +29,16 @@ For the node `key2: 'v2'` we have
 ## Install
 
     npm install redux-json-tree
-    
-## Usage
 
-For now, 
+## Example
+Online example [here](http://krispo.github.io/redux-json-tree/)
 
+Locally, 
 1. Clone the repo
-2. npm install
-3. npm start
-    
-and go to `localhost:3000`.
+2. $cd examples
+3. $npm install
+4. $npm start
+5. go to `localhost:3000` 
 
 Try to edit some fields in `redux-json-tree` and check how the plain json data will be changed as well.
 Single redux store can be used by multiple components. 

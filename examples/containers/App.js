@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import JsonTree from './JsonTree'
+import { JsonTree } from 'redux-json-tree'
 import JsonView from './JsonView'
 
 class App extends Component {

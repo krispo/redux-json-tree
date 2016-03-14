@@ -1,6 +1,6 @@
 export const UPDATE = 'UPDATE';
 
-export default function update(path, value, stateKey){
+export function update(path, value, stateKey){
   return {
     type: UPDATE,
     path,
