@@ -24,6 +24,10 @@ For the node `key2: 'v2'` we have
 
     ('root.foo.buz.1.key2', 'v2')
 
+## Install
+
+    npm install redux-json-tree
+    
 ## Usage
 
 For now, 
