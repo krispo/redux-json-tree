@@ -1,10 +1,9 @@
 export const UPDATE = 'UPDATE';
 
-export function update(path, value, stateKey){
+export function update(path, value){
   return {
     type: UPDATE,
     path,
-    value,
-    stateKey
+    value
   }
 }

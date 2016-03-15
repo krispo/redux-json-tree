@@ -16,11 +16,11 @@ export function simplifiedReducer(state = {}, action){
   if (typeof path === 'undefined') {
     return state
   }
-  return Object.assign({}, state, update(
+  return update(
     Object.assign({}, state),
     action.path,
     isNaN(+action.value) ? action.value : +action.value
-  ))
+  )
 }
 
 export function rawReducer(state = {}, action){

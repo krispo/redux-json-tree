@@ -1,6 +1,6 @@
 {
   "name": "redux-json-tree",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React Redux editable JSON tree component for deeply nested data",
   "main": "./lib/index.js",
   "jsnext:main": "./src/index.js",

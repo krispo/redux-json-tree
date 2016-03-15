@@ -6,11 +6,7 @@ import configureStore from './store/configureStore'
 import {data} from './data'
 import {simplify} from 'simplifr'
 
-const allData = {
-  data: data,
-  simplifiedData: simplify(data)
-}
-const store = configureStore(allData)
+const store = configureStore(simplify(data))
 
 render(
   <Provider store={store}>

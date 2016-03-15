@@ -91,11 +91,8 @@ JsonTree.defaultProps = {
 }
 
 function mapStateToProps(state, props) {
-  if (typeof props.path === 'undefined' || props.path === 'root') return {
-    data: state[props.stateKey]['root']
-  };
   return {
-    data: state[props.stateKey][props.path],
+    data: state[props.path],
     k: props.path.split('.').pop(),
   }
 }
