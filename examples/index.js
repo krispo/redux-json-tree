@@ -6,7 +6,9 @@ import configureStore from './store/configureStore'
 import {data} from './data'
 import {simplify} from 'simplifr'
 
-const store = configureStore(simplify(data))
+let initialState = simplify(data)
+
+const store = configureStore(initialState)
 
 render(
   <Provider store={store}>

@@ -1,6 +1,6 @@
 {
   "name": "redux-json-tree",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React Redux editable JSON tree component for deeply nested data",
   "main": "./lib/index.js",
   "jsnext:main": "./src/index.js",
@@ -17,9 +17,10 @@
     "src"
   ],
   "scripts": {
-    "prebuild": "rm -rf lib",
-    "build": "babel src --out-dir lib --presets react,es2015 && mkdir lib/styles && cp src/styles/JsonTree.scss lib/styles/JsonTree.scss ",
-    "prepublish": "npm run build"
+    "prebuild": "rm -rf lib && rm -rf examples/lib",
+    "build": "babel src --out-dir lib --presets react,es2015 && mkdir lib/styles && cp src/styles/JsonTree.scss lib/styles/JsonTree.scss",
+    "prepublish": "npm run build",
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -32,13 +33,21 @@
     "react-dom": "^0.14.2",
     "react-redux": "^4.4.0",
     "redux": "^3.2.1",
-    "simplifr": "^0.1"
+    "simplifr": "^0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.3.15",
     "babel-core": "^6.3.15",
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13"
+    "babel-preset-react": "^6.3.13",
+    "autoprefixer": "^6.3.1",
+    "classnames": "^2.2.3",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "postcss-loader": "^0.8.0",
+    "precss": "^1.4.0",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.9.11"
   }
 }

@@ -1,8 +1,8 @@
 import { createStore, combineReducers } from 'redux'
-import {simplifiedReducer, rawReducer} from 'redux-json-tree'
+import { reducer } from '../../src'
 
 export default function configureStore(initialState){
-  const store = createStore(simplifiedReducer, initialState)
+  const store = createStore(reducer, initialState)
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
