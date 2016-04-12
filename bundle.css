@@ -10,6 +10,31 @@
   width: 50px;
   height: 12px;
 }
+
+/* Arrow */
+.redux-json-tree-arrow {
+  color: rgba(255, 32, 5, 0.71);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top-width: 5px;
+  border-top-style: solid;
+
+  display: inline-block;
+  margin-left: 0;
+  margin-top: 6px;
+  margin-right: 2px;
+  float: left;
+  -webkit-transition: 200ms;
+  transition: 200ms;
+  -webkit-transform: rotateZ(-90deg);
+  transform: rotateZ(-90deg);
+  position: relative
+}
+.redux-json-tree-arrow.open {
+  -webkit-transform: rotateZ(0deg);
+  transform: rotateZ(0deg);
+}
+
 .hidden {
   display: none;
   visibility: hidden;

@@ -54,25 +54,23 @@
 
 	var _reactRedux = __webpack_require__(159);
 
-	var _App = __webpack_require__(177);
+	var _App = __webpack_require__(178);
 
 	var _App2 = _interopRequireDefault(_App);
 
-	var _configureStore = __webpack_require__(183);
+	var _configureStore = __webpack_require__(187);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
-	var _data = __webpack_require__(185);
+	var _data = __webpack_require__(188);
 
 	var _simplifr = __webpack_require__(186);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var allData = {
-	  data: _data.data,
-	  simplifiedData: (0, _simplifr.simplify)(_data.data, '.')
-	};
-	var store = (0, _configureStore2.default)(allData);
+	var initialState = (0, _simplifr.simplify)(_data.data);
+
+	var store = (0, _configureStore2.default)(initialState);
 
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRedux.Provider,
@@ -7979,6 +7977,10 @@
 	  }
 	};
 
+	function registerNullComponentID() {
+	  ReactEmptyComponentRegistry.registerNullComponentID(this._rootNodeID);
+	}
+
 	var ReactEmptyComponent = function (instantiate) {
 	  this._currentElement = null;
 	  this._rootNodeID = null;
@@ -7987,7 +7989,7 @@
 	assign(ReactEmptyComponent.prototype, {
 	  construct: function (element) {},
 	  mountComponent: function (rootID, transaction, context) {
-	    ReactEmptyComponentRegistry.registerNullComponentID(rootID);
+	    transaction.getReactMountReady().enqueue(registerNullComponentID, this);
 	    this._rootNodeID = rootID;
 	    return ReactReconciler.mountComponent(this._renderedComponent, rootID, transaction, context);
 	  },
@@ -18710,7 +18712,7 @@
 
 	'use strict';
 
-	module.exports = '0.14.7';
+	module.exports = '0.14.8';
 
 /***/ },
 /* 147 */
@@ -19832,11 +19834,11 @@
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _hoistNonReactStatics = __webpack_require__(175);
+	var _hoistNonReactStatics = __webpack_require__(176);
 
 	var _hoistNonReactStatics2 = _interopRequireDefault(_hoistNonReactStatics);
 
-	var _invariant = __webpack_require__(176);
+	var _invariant = __webpack_require__(177);
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
@@ -20192,23 +20194,23 @@
 
 	var _createStore2 = _interopRequireDefault(_createStore);
 
-	var _combineReducers = __webpack_require__(170);
+	var _combineReducers = __webpack_require__(171);
 
 	var _combineReducers2 = _interopRequireDefault(_combineReducers);
 
-	var _bindActionCreators = __webpack_require__(172);
+	var _bindActionCreators = __webpack_require__(173);
 
 	var _bindActionCreators2 = _interopRequireDefault(_bindActionCreators);
 
-	var _applyMiddleware = __webpack_require__(173);
+	var _applyMiddleware = __webpack_require__(174);
 
 	var _applyMiddleware2 = _interopRequireDefault(_applyMiddleware);
 
-	var _compose = __webpack_require__(174);
+	var _compose = __webpack_require__(175);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
-	var _warning = __webpack_require__(171);
+	var _warning = __webpack_require__(172);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -20456,8 +20458,9 @@
 /* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isHostObject = __webpack_require__(168),
-	    isObjectLike = __webpack_require__(169);
+	var getPrototype = __webpack_require__(168),
+	    isHostObject = __webpack_require__(169),
+	    isObjectLike = __webpack_require__(170);
 
 	/** `Object#toString` result references. */
 	var objectTag = '[object Object]';
@@ -20468,17 +20471,18 @@
 	/** Used to resolve the decompiled source of functions. */
 	var funcToString = Function.prototype.toString;
 
+	/** Used to check objects for own properties. */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
 	/** Used to infer the `Object` constructor. */
 	var objectCtorString = funcToString.call(Object);
 
 	/**
-	 * Used to resolve the [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
+	 * Used to resolve the
+	 * [`toStringTag`](http://ecma-international.org/ecma-262/6.0/#sec-object.prototype.tostring)
 	 * of values.
 	 */
 	var objectToString = objectProto.toString;
-
-	/** Built-in value references. */
-	var getPrototypeOf = Object.getPrototypeOf;
 
 	/**
 	 * Checks if `value` is a plain object, that is, an object created by the
@@ -20486,9 +20490,11 @@
 	 *
 	 * @static
 	 * @memberOf _
+	 * @since 0.8.0
 	 * @category Lang
 	 * @param {*} value The value to check.
-	 * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+	 * @returns {boolean} Returns `true` if `value` is a plain object,
+	 *  else `false`.
 	 * @example
 	 *
 	 * function Foo() {
@@ -20512,11 +20518,11 @@
 	      objectToString.call(value) != objectTag || isHostObject(value)) {
 	    return false;
 	  }
-	  var proto = getPrototypeOf(value);
+	  var proto = getPrototype(value);
 	  if (proto === null) {
 	    return true;
 	  }
-	  var Ctor = proto.constructor;
+	  var Ctor = hasOwnProperty.call(proto, 'constructor') && proto.constructor;
 	  return (typeof Ctor == 'function' &&
 	    Ctor instanceof Ctor && funcToString.call(Ctor) == objectCtorString);
 	}
@@ -20526,6 +20532,27 @@
 
 /***/ },
 /* 168 */
+/***/ function(module, exports) {
+
+	/* Built-in method references for those with the same name as other `lodash` methods. */
+	var nativeGetPrototype = Object.getPrototypeOf;
+
+	/**
+	 * Gets the `[[Prototype]]` of `value`.
+	 *
+	 * @private
+	 * @param {*} value The value to query.
+	 * @returns {null|Object} Returns the `[[Prototype]]`.
+	 */
+	function getPrototype(value) {
+	  return nativeGetPrototype(Object(value));
+	}
+
+	module.exports = getPrototype;
+
+
+/***/ },
+/* 169 */
 /***/ function(module, exports) {
 
 	/**
@@ -20551,7 +20578,7 @@
 
 
 /***/ },
-/* 169 */
+/* 170 */
 /***/ function(module, exports) {
 
 	/**
@@ -20560,6 +20587,7 @@
 	 *
 	 * @static
 	 * @memberOf _
+	 * @since 4.0.0
 	 * @category Lang
 	 * @param {*} value The value to check.
 	 * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
@@ -20585,7 +20613,7 @@
 
 
 /***/ },
-/* 170 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -20599,7 +20627,7 @@
 
 	var _isPlainObject2 = _interopRequireDefault(_isPlainObject);
 
-	var _warning = __webpack_require__(171);
+	var _warning = __webpack_require__(172);
 
 	var _warning2 = _interopRequireDefault(_warning);
 
@@ -20718,7 +20746,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 171 */
+/* 172 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20747,7 +20775,7 @@
 	}
 
 /***/ },
-/* 172 */
+/* 173 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20803,7 +20831,7 @@
 	}
 
 /***/ },
-/* 173 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20813,7 +20841,7 @@
 	exports.__esModule = true;
 	exports["default"] = applyMiddleware;
 
-	var _compose = __webpack_require__(174);
+	var _compose = __webpack_require__(175);
 
 	var _compose2 = _interopRequireDefault(_compose);
 
@@ -20865,7 +20893,7 @@
 	}
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20899,7 +20927,7 @@
 	}
 
 /***/ },
-/* 175 */
+/* 176 */
 /***/ function(module, exports) {
 
 	/**
@@ -20945,7 +20973,7 @@
 
 
 /***/ },
-/* 176 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -21003,7 +21031,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ },
-/* 177 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21020,11 +21048,9 @@
 
 	var _reactRedux = __webpack_require__(159);
 
-	var _JsonTree = __webpack_require__(178);
+	var _src = __webpack_require__(179);
 
-	var _JsonTree2 = _interopRequireDefault(_JsonTree);
-
-	var _JsonView = __webpack_require__(182);
+	var _JsonView = __webpack_require__(185);
 
 	var _JsonView2 = _interopRequireDefault(_JsonView);
 
@@ -21078,12 +21104,12 @@
 	            _react2.default.createElement(
 	              'td',
 	              null,
-	              _react2.default.createElement(_JsonTree2.default, null)
+	              _react2.default.createElement(_src.JsonTree, { path: 'root' })
 	            ),
 	            _react2.default.createElement(
 	              'td',
 	              null,
-	              _react2.default.createElement(_JsonView2.default, null)
+	              _react2.default.createElement(_JsonView2.default, { path: 'root' })
 	            )
 	          )
 	        )
@@ -21097,7 +21123,7 @@
 	exports.default = (0, _reactRedux.connect)()(App);
 
 /***/ },
-/* 178 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21105,6 +21131,53 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _JsonTree = __webpack_require__(180);
+
+	Object.defineProperty(exports, 'JsonTree', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_JsonTree).default;
+	  }
+	});
+
+	var _actions = __webpack_require__(181);
+
+	Object.defineProperty(exports, 'UPDATE', {
+	  enumerable: true,
+	  get: function get() {
+	    return _actions.UPDATE;
+	  }
+	});
+	Object.defineProperty(exports, 'update', {
+	  enumerable: true,
+	  get: function get() {
+	    return _actions.update;
+	  }
+	});
+
+	var _reducers = __webpack_require__(184);
+
+	Object.defineProperty(exports, 'reducer', {
+	  enumerable: true,
+	  get: function get() {
+	    return _reducers.reducer;
+	  }
+	});
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 180 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21114,15 +21187,15 @@
 
 	var _reactRedux = __webpack_require__(159);
 
-	var _actions = __webpack_require__(179);
+	var _actions = __webpack_require__(181);
 
 	var actions = _interopRequireWildcard(_actions);
 
-	var _bind = __webpack_require__(180);
+	var _bind = __webpack_require__(182);
 
 	var _bind2 = _interopRequireDefault(_bind);
 
-	var _JsonTree = __webpack_require__(181);
+	var _JsonTree = __webpack_require__(183);
 
 	var _JsonTree2 = _interopRequireDefault(_JsonTree);
 
@@ -21167,24 +21240,28 @@
 	      var _props = this.props;
 	      var update = _props.update;
 	      var path = _props.path;
+	      var stateKey = _props.stateKey;
 
-	      update(path, e.target.value);
+	      update(path, e.target.value, stateKey);
 	    }
 	  }, {
 	    key: 'renderNode',
 	    value: function renderNode() {
+	      var _this2 = this;
+
 	      var _props2 = this.props;
 	      var data = _props2.data;
+	      var path = _props2.path;
 	      var level = _props2.level;
 
-	      var list = data.childs.map(function (path) {
+	      var list = data.childs.map(function (key) {
 	        return _react2.default.createElement(
 	          'li',
 	          null,
-	          _react2.default.createElement(ConnectedJsonTree, {
-	            path: path,
+	          _react2.default.createElement(ConnectedJsonTree, _extends({}, _this2.props, {
+	            path: path + '.' + key,
 	            level: level + 1
-	          })
+	          }))
 	        );
 	      });
 	      return _react2.default.createElement(
@@ -21207,11 +21284,16 @@
 	        'node': t === 'object' || t === 'array',
 	        'leaf': t !== 'object' && t !== 'array'
 	      });
+	      var arrowClass = cn({
+	        'redux-json-tree-arrow': true,
+	        open: !this.state.collapsed
+	      });
 
 	      if (t === 'object') {
 	        return _react2.default.createElement(
 	          'div',
 	          { className: nodeClass },
+	          _react2.default.createElement('div', { className: arrowClass }),
 	          _react2.default.createElement(
 	            'span',
 	            { onClick: this.click.bind(this) },
@@ -21234,6 +21316,7 @@
 	        return _react2.default.createElement(
 	          'div',
 	          { className: nodeClass },
+	          _react2.default.createElement('div', { className: arrowClass }),
 	          _react2.default.createElement(
 	            'span',
 	            { onClick: this.click },
@@ -21283,11 +21366,8 @@
 	};
 
 	function mapStateToProps(state, props) {
-	  if (typeof props.path === 'undefined' || props.path === 'root') return {
-	    data: state.simplifiedData['root']
-	  };
 	  return {
-	    data: state.simplifiedData[props.path],
+	    data: state[props.path],
 	    k: props.path.split('.').pop()
 	  };
 	}
@@ -21296,7 +21376,7 @@
 	exports.default = ConnectedJsonTree;
 
 /***/ },
-/* 179 */
+/* 181 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21316,7 +21396,7 @@
 	}
 
 /***/ },
-/* 180 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -21370,14 +21450,45 @@
 
 
 /***/ },
-/* 181 */
+/* 183 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"redux-json-tree":"redux-json-tree","node":"node","leaf":"leaf","hidden":"hidden"};
+	module.exports = {"redux-json-tree":"redux-json-tree","node":"node","leaf":"leaf","redux-json-tree-arrow":"redux-json-tree-arrow","open":"open","hidden":"hidden"};
 
 /***/ },
-/* 182 */
+/* 184 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.reducer = reducer;
+
+	var _actions = __webpack_require__(181);
+
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+	function reducer() {
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+	  var action = arguments[1];
+	  var path = action.path;
+
+	  if (typeof path === 'undefined') {
+	    return state;
+	  }
+	  switch (action.type) {
+	    case _actions.UPDATE:
+	      return Object.assign({}, state, _defineProperty({}, action.path, isNaN(+action.value) ? action.value : +action.value));
+	    default:
+	      return state;
+	  }
+	}
+
+/***/ },
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21393,6 +21504,8 @@
 	var _react2 = _interopRequireDefault(_react);
 
 	var _reactRedux = __webpack_require__(159);
+
+	var _simplifr = __webpack_require__(186);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21420,7 +21533,7 @@
 	        _react2.default.createElement(
 	          'pre',
 	          null,
-	          JSON.stringify(this.props.state.data, null, 2)
+	          JSON.stringify((0, _simplifr.desimplify)(this.props.data, this.props.path), null, 2)
 	        )
 	      );
 	    }
@@ -21430,14 +21543,208 @@
 	}(_react.Component);
 
 	function mapStateToProps(state, props) {
-	  return { state: state };
+	  return { data: state };
 	}
 
 	var ConnectedJsonView = (0, _reactRedux.connect)(mapStateToProps)(JsonView);
 	exports.default = ConnectedJsonView;
 
 /***/ },
-/* 183 */
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* Simplifr, v0.2.0 */
+	(function (global, factory) {
+	   true ? factory(exports) :
+	  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	  (factory((global.simplifr = global.simplifr || {})));
+	}(this, function (exports) { 'use strict';
+
+	  function defaults(){
+	    return {
+	      root: 'root',
+	      dilimiter: '.'
+	    }
+	  }
+
+	  function simplify(obj, dilimiter, root){
+	    dilimiter = dilimiter || defaults().dilimiter;
+	    root = root || defaults().root;
+
+	    return simplifyNode({}, root, obj, dilimiter);
+	  }
+
+	  function add(data, path, obj, dilimiter){
+	    dilimiter = dilimiter || defaults().dilimiter;
+	    var node = data[path];
+
+	    if (typeof node === 'undefined' || typeof node === 'null')
+	      return data;
+
+	    if (node.type === 'array') {
+	      var max = Math.max.apply(null, node.childs);
+	      if (!isArray(obj)) obj = [obj];
+	      obj.forEach(function(d){
+	        node.childs.push(++max);
+	        simplifyNode(data, path + dilimiter + max, d, dilimiter);
+	      });
+	    }
+
+	    else if (node.type === 'object') {
+	      var keys = Object.keys(obj);
+	      keys.forEach(function(key){
+	        node.childs.push(key);
+	        simplifyNode(data, path + dilimiter + key, obj[key], dilimiter);
+	      });
+	    }
+
+	    return data;
+	  }
+
+	  function update(data, path, obj, dilimiter){
+	    reset(data, path, dilimiter);
+	    simplifyNode(data, path, obj, dilimiter);
+	    return data;
+	  }
+
+	  function remove(data, path, dilimiter){
+	    dilimiter = dilimiter || defaults().dilimiter;
+	    var pathSeq = path.split(dilimiter);
+	    var key = pathSeq.pop();
+	    var parentNode = pathSeq.length ? data[pathSeq.join(dilimiter)] : data;
+
+	    if (parentNode.type === 'array') key = +key;
+
+	    var idx = parentNode.childs.indexOf(key);
+	    if (idx > -1) parentNode.childs.splice(idx, 1);
+
+	    removeChildNode(data, path, dilimiter);
+
+	    return data;
+	  }
+
+	  function reset(data, path, dilimiter){
+	    dilimiter = dilimiter || defaults().dilimiter;
+
+	    removeChildNode(data, path, dilimiter);
+	    data[path] = null;
+
+	    return data;
+	  }
+
+	  function desimplify(data, path, dilimiter){
+	    dilimiter = dilimiter || defaults().dilimiter;
+	    path = path || defaults().root;
+
+	    return dive(path);
+
+	    function dive(path){
+	      var obj;
+	      var node = data[path];
+
+	      if (typeof node === 'undefined' || typeof node === 'null')
+	        return node;
+
+	      if (node.type === 'array') {
+	        obj = [];
+	        node.childs.forEach(function(key){
+	          obj.push(dive(path + dilimiter + key));
+	        });
+	      }
+
+	      else if (node.type === 'object') {
+	        obj = {};
+	        node.childs.forEach(function(key){
+	          obj[key] = dive(path + dilimiter + key);
+	        });
+	      }
+
+	      else obj = node;
+
+	      return obj;
+	    }
+	  }
+
+	  function join(){
+	    if (!arguments.length) return;
+	    var fargs = Array.prototype.filter.call(arguments, function(v){ return v != undefined && v != '' });
+	    return Array.prototype.join.call(fargs, '.');
+	  }
+
+	  function simplifyNode(data, path, obj, dilimiter){
+	    dilimiter = dilimiter || defaults().dilimiter;
+
+	    dive(obj, path);
+
+	    return data;
+
+	    function dive(obj, path){
+	      data[path] = {
+	        type: 'object',
+	        childs: []
+	      };
+
+	      if (isArray(obj)) {
+	        data[path].type = 'array';
+	        for (var i = -1, l = obj.length; ++i < l;) {
+	          data[path].childs.push(i);
+	          dive(obj[i], path + dilimiter + i);
+	        }
+	      }
+
+	      else if (isObject(obj)) {
+	        for (var key in obj) {
+	          if (obj.hasOwnProperty(key)) {
+	            data[path].childs.push(key);
+	            dive(obj[key], path + dilimiter + key);
+	          }
+	        }
+	      }
+
+	      else data[path] = obj;
+
+	      return data;
+	    }
+	  }
+
+	  function removeChildNode(data, path, dilimiter){
+	    dilimiter = dilimiter || defaults().dilimiter;
+	    var node = data[path];
+
+	    if (typeof node === 'undefined' || typeof node === 'null')
+	      return data;
+
+	    if (node.type === 'array' || node.type === 'object') {
+	      node.childs.forEach(function(key){
+	        removeChildNode(data, path + dilimiter + key);
+	      });
+	    }
+
+	    delete data[path];
+
+	    return data;
+	  }
+
+	  function isArray(_) {
+	    return Object.prototype.toString.call(_) === '[object Array]';
+	  }
+
+	  function isObject(_) {
+	    return Object.prototype.toString.call(_) === '[object Object]';
+	  }
+
+	  exports.simplify = simplify;
+	  exports.add = add;
+	  exports.update = update;
+	  exports.remove = remove;
+	  exports.reset = reset;
+	  exports.desimplify = desimplify;
+	  exports.join = join;
+
+	}));
+
+/***/ },
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21449,14 +21756,10 @@
 
 	var _redux = __webpack_require__(165);
 
-	var _reducers = __webpack_require__(184);
-
-	var _reducers2 = _interopRequireDefault(_reducers);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _src = __webpack_require__(179);
 
 	function configureStore(initialState) {
-	  var store = (0, _redux.createStore)(_reducers2.default, initialState);
+	  var store = (0, _redux.createStore)(_src.reducer, initialState);
 
 	  if (false) {
 	    // Enable Webpack hot module replacement for reducers
@@ -21470,67 +21773,7 @@
 	}
 
 /***/ },
-/* 184 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	exports.default = function () {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-	  var action = arguments[1];
-	  var path = action.path;
-
-	  if (typeof path === 'undefined') {
-	    return state;
-	  }
-
-	  return Object.assign({}, state, {
-	    data: node(state.data, action),
-	    simplifiedData: Object.assign({}, state.simplifiedData, _defineProperty({}, action.path, isNaN(+action.value) ? action.value : +action.value))
-	  });
-	};
-
-	var _actions = __webpack_require__(179);
-
-	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-	function node(state, action) {
-	  switch (action.type) {
-	    case _actions.UPDATE:
-	      {
-	        var _ret = function () {
-	          var deep = function deep(cs, p) {
-	            if (p.length > 1) {
-	              var key = p.shift();
-	              deep(cs[key], p);
-	            } else {
-	              var v = isNaN(+action.value) ? action.value : +action.value;
-	              return cs[p.shift()] = v;
-	            }
-	          };
-
-	          var path_sequence = action.path.split('.').slice(1);
-	          deep(state, path_sequence);
-	          return {
-	            v: state
-	          };
-	        }();
-
-	        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
-	      }
-	    default:
-	      return state;
-	  }
-	}
-
-/***/ },
-/* 185 */
+/* 188 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21570,74 +21813,14 @@
 	      })
 	    };
 	  }),
-	  largeArray: generate(1000)
-	  //largeArray: generate(1000, function(i){
-	  //  return {
-	  //    x: i,
-	  //    y: 2*i
-	  //  }
-	  //})
+	  largeArray: generate(1000, function (i) {
+	    return i;
+	    return {
+	      x: i,
+	      y: 2 * i
+	    };
+	  })
 	};
-
-/***/ },
-/* 186 */
-/***/ function(module, exports, __webpack_require__) {
-
-	(function (global, factory) {
-	   true ? factory(exports) :
-	  typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	  (factory((global.simplifr = global.simplifr || {})));
-	}(this, function (exports) { 'use strict';
-
-	  function simplify(json, dilimiter){
-	    var data = {};
-
-	    dilimiter = dilimiter || '_';
-
-	    dive(json, 'root');
-
-	    return data;
-
-	    function dive(json, path){
-	      data[path] = {
-	        type: 'object',
-	        childs: []
-	      };
-
-	      if (isArray(json)) {
-	        data[path].type = 'array';
-	        for (var i = -1, l = json.length; ++i < l;) {
-	          var next = path + dilimiter + i;
-	          data[path].childs.push(next);
-	          dive(json[i], next);
-	        }
-	      }
-	      else if (isObject(json)) {
-	        for (var key in json) {
-	          if (json.hasOwnProperty(key)) {
-	            var next = path + dilimiter + key;
-	            data[path].childs.push(next);
-	            dive(json[key], next);
-	          }
-	        }
-	      }
-	      else data[path] = json;
-
-	      return data;
-	    }
-	  }
-
-	  function isArray(_) {
-	    return Object.prototype.toString.call(_) === '[object Array]';
-	  }
-
-	  function isObject(_) {
-	    return Object.prototype.toString.call(_) === '[object Object]';
-	  }
-
-	  exports.simplify = simplify;
-
-	}));
 
 /***/ }
 /******/ ]);
