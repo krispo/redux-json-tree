@@ -47,10 +47,15 @@ class JsonTree extends Component {
       'node': t === 'object' || t === 'array',
       'leaf': t !== 'object' && t !== 'array'
     });
+    const arrowClass = cn({
+      arrow: true,
+      open: !this.state.collapsed
+    })
 
     if (t === 'object') {
       return (
         <div className={nodeClass}>
+          <div className={arrowClass}></div>
           <span onClick={this.click.bind(this)}>{ level ? k : 'root' }: </span>
           <span>{'{'}</span>
             { this.state.collapsed ? '' : this.renderNode() }
@@ -61,6 +66,7 @@ class JsonTree extends Component {
     else if (t === 'array') {
       return (
         <div className={nodeClass}>
+          <div className={arrowClass}></div>
           <span onClick={this.click}>{ k }: </span>
           <span>{'['}</span>
           { this.state.collapsed ? '' : this.renderNode() }
