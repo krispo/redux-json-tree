@@ -48,7 +48,7 @@ class JsonTree extends Component {
       'leaf': t !== 'object' && t !== 'array'
     });
     const arrowClass = cn({
-      arrow: true,
+      'redux-json-tree-arrow': true,
       open: !this.state.collapsed
     })
 

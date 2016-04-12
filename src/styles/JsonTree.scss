@@ -16,7 +16,7 @@
 }
 
 /* Arrow */
-.arrow {
+.redux-json-tree-arrow {
   color: rgba(255, 32, 5, 0.71);
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
@@ -33,10 +33,11 @@
   -webkit-transform: rotateZ(-90deg);
   transform: rotateZ(-90deg);
   position: relative;
-}
-.open {
-  -webkit-transform: rotateZ(0deg);
-  transform: rotateZ(0deg);
+
+  &.open {
+    -webkit-transform: rotateZ(0deg);
+    transform: rotateZ(0deg);
+  }
 }
 
 //////////////////////////////
