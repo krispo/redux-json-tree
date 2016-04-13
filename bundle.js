@@ -21280,9 +21280,7 @@
 
 	      var t = data.type;
 	      var nodeClass = cn({
-	        'redux-json-tree': !this.props.level,
-	        'node': t === 'object' || t === 'array',
-	        'leaf': t !== 'object' && t !== 'array'
+	        'redux-json-tree': !this.props.level
 	      });
 	      var arrowClass = cn({
 	        'redux-json-tree-arrow': true,
@@ -21293,22 +21291,26 @@
 	        return _react2.default.createElement(
 	          'div',
 	          { className: nodeClass },
-	          _react2.default.createElement('div', { className: arrowClass }),
+	          _react2.default.createElement('div', { className: arrowClass, onClick: this.click }),
 	          _react2.default.createElement(
 	            'span',
-	            { onClick: this.click.bind(this) },
+	            { className: cn({ object: true }), onClick: this.click.bind(this) },
 	            level ? k : 'root',
 	            ': '
 	          ),
 	          _react2.default.createElement(
 	            'span',
-	            null,
+	            { className: cn({ bracket: true }) },
 	            '{'
 	          ),
-	          this.state.collapsed ? '' : this.renderNode(),
+	          this.state.collapsed ? _react2.default.createElement(
+	            'span',
+	            { className: cn({ count: true }) },
+	            data.childs.length
+	          ) : this.renderNode(),
 	          _react2.default.createElement(
 	            'span',
-	            null,
+	            { className: cn({ bracket: true }) },
 	            '}'
 	          )
 	        );
@@ -21316,32 +21318,36 @@
 	        return _react2.default.createElement(
 	          'div',
 	          { className: nodeClass },
-	          _react2.default.createElement('div', { className: arrowClass }),
+	          _react2.default.createElement('div', { className: arrowClass, onClick: this.click }),
 	          _react2.default.createElement(
 	            'span',
-	            { onClick: this.click },
+	            { className: cn({ array: true }), onClick: this.click },
 	            k,
 	            ': '
 	          ),
 	          _react2.default.createElement(
 	            'span',
-	            null,
+	            { className: cn({ bracket: true }) },
 	            '['
 	          ),
-	          this.state.collapsed ? '' : this.renderNode(),
+	          this.state.collapsed ? _react2.default.createElement(
+	            'span',
+	            { className: cn({ count: true }) },
+	            data.childs.length
+	          ) : this.renderNode(),
 	          _react2.default.createElement(
 	            'span',
-	            null,
+	            { className: cn({ bracket: true }) },
 	            ']'
 	          )
 	        );
 	      } else {
 	        return _react2.default.createElement(
 	          'span',
-	          { className: nodeClass },
+	          { className: cn({ leaf: true }) },
 	          _react2.default.createElement(
 	            'span',
-	            { onClick: this.click.bind(this) },
+	            { onClick: this.click },
 	            k,
 	            ': '
 	          ),
@@ -21454,7 +21460,7 @@
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"redux-json-tree":"redux-json-tree","node":"node","leaf":"leaf","redux-json-tree-arrow":"redux-json-tree-arrow","open":"open","hidden":"hidden"};
+	module.exports = {"redux-json-tree":"redux-json-tree","object":"object","array":"array","count":"count","bracket":"bracket","leaf":"leaf","redux-json-tree-arrow":"redux-json-tree-arrow","open":"open","hidden":"hidden"};
 
 /***/ },
 /* 184 */

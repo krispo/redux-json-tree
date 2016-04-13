@@ -3,8 +3,18 @@
   list-style: none;
   padding-left: 1em;
 }
-.redux-json-tree .node {
-  display: initial;
+.redux-json-tree .object {
+  cursor: pointer;
+}
+.redux-json-tree .array {
+  cursor: pointer;
+}
+.redux-json-tree .count {
+  opacity: .5;
+  font-style: italic;
+}
+.redux-json-tree .bracket {
+  opacity: .5;
 }
 .redux-json-tree .leaf input {
   width: 50px;
@@ -13,7 +23,8 @@
 
 /* Arrow */
 .redux-json-tree-arrow {
-  color: rgba(255, 32, 5, 0.71);
+  color: rgb(255, 32, 5);
+  opacity: .5;
   border-left: 4px solid transparent;
   border-right: 4px solid transparent;
   border-top-width: 5px;
@@ -28,11 +39,13 @@
   transition: 200ms;
   -webkit-transform: rotateZ(-90deg);
   transform: rotateZ(-90deg);
-  position: relative
+  position: relative;
+  cursor: pointer
 }
 .redux-json-tree-arrow.open {
   -webkit-transform: rotateZ(0deg);
   transform: rotateZ(0deg);
+  opacity: 1;
 }
 
 .hidden {
