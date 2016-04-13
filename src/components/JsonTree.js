@@ -43,10 +43,8 @@ class JsonTree extends Component {
     const { data, k, level } = this.props
     const t = data.type;
     const nodeClass = cn({
-      'redux-json-tree': !this.props.level,
-      'node': t === 'object' || t === 'array',
-      'leaf': t !== 'object' && t !== 'array'
-    });
+      'redux-json-tree': !this.props.level
+    })
     const arrowClass = cn({
       'redux-json-tree-arrow': true,
       open: !this.state.collapsed
@@ -55,29 +53,29 @@ class JsonTree extends Component {
     if (t === 'object') {
       return (
         <div className={nodeClass}>
-          <div className={arrowClass}></div>
-          <span onClick={this.click.bind(this)}>{ level ? k : 'root' }: </span>
-          <span>{'{'}</span>
-            { this.state.collapsed ? '' : this.renderNode() }
-            <span>{'}'}</span>
+          <div className={arrowClass} onClick={this.click}></div>
+          <span className={cn({object: true})} onClick={this.click.bind(this)}>{ level ? k : 'root' }: </span>
+          <span className={cn({bracket: true})}>{'{'}</span>
+            { this.state.collapsed ? <span className={cn({count: true})}>{data.childs.length}</span> : this.renderNode() }
+          <span className={cn({bracket: true})}>{'}'}</span>
         </div>
       )
     }
     else if (t === 'array') {
       return (
         <div className={nodeClass}>
-          <div className={arrowClass}></div>
-          <span onClick={this.click}>{ k }: </span>
-          <span>{'['}</span>
-          { this.state.collapsed ? '' : this.renderNode() }
-          <span>{']'}</span>
+          <div className={arrowClass} onClick={this.click}></div>
+          <span className={cn({array: true})} onClick={this.click}>{ k }: </span>
+          <span className={cn({bracket: true})}>{'['}</span>
+            { this.state.collapsed ? <span className={cn({count: true})}>{data.childs.length}</span> : this.renderNode() }
+          <span className={cn({bracket: true})}>{']'}</span>
         </div>
       )
     }
     else {
       return (
-        <span className={nodeClass}>
-          <span onClick={this.click.bind(this)}>{ k }: </span>
+        <span className={cn({leaf: true})}>
+          <span onClick={this.click}>{ k }: </span>
           <input
             value={data}
             onChange={this.onChange}>
