@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { AutoSizer, VirtualScroll } from 'react-virtualized'
+import 'react-virtualized/styles.css'
 import * as actions from '../actions'
 import classNames from 'classnames/bind'
 import css from '../styles/JsonTree.scss'
@@ -11,18 +13,14 @@ class JsonTree extends Component {
     super(props)
     this.click = this.click.bind(this)
     this.onChange = this.onChange.bind(this)
-    this.state = {
-      collapsed: false
-    }
   }
   click(e){
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
+    const { toggle, path } = this.props
+    toggle(path)
   }
   onChange(e){
-    const { update, path, stateKey } = this.props
-    update(path, e.target.value, stateKey)
+    const { update, path } = this.props
+    update(path, e.target.value)
   }
 
   renderNode(){
@@ -47,7 +45,7 @@ class JsonTree extends Component {
     })
     const arrowClass = cn({
       'redux-json-tree-arrow': true,
-      open: !this.state.collapsed
+      open: data.expanded
     })
 
     if (t === 'object') {
@@ -56,7 +54,7 @@ class JsonTree extends Component {
           <div className={arrowClass} onClick={this.click}></div>
           <span className={cn({object: true})} onClick={this.click.bind(this)}>{ level ? k : 'root' }: </span>
           <span className={cn({bracket: true})}>{'{'}</span>
-            { this.state.collapsed ? <span className={cn({count: true})}>{data.childs.length}</span> : this.renderNode() }
+            { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{'}'}</span>
         </div>
       )
@@ -67,7 +65,7 @@ class JsonTree extends Component {
           <div className={arrowClass} onClick={this.click}></div>
           <span className={cn({array: true})} onClick={this.click}>{ k }: </span>
           <span className={cn({bracket: true})}>{'['}</span>
-            { this.state.collapsed ? <span className={cn({count: true})}>{data.childs.length}</span> : this.renderNode() }
+            { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{']'}</span>
         </div>
       )
