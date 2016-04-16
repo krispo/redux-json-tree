@@ -9,9 +9,10 @@ export function update(path, value){
   }
 }
 
-export function toggle(path){
+export function toggle(path, value){
   return {
     type: TOGGLE,
-    path
+    path,
+    value
   }
 }

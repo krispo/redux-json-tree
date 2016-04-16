@@ -9,7 +9,11 @@ export function reducer(state = {}, action){
     case UPDATE:
       return Object.assign({}, state, { [action.path]: isNaN(+action.value) ? action.value : +action.value })
     case TOGGLE:
-      return Object.assign({}, state, { [action.path]: Object.assign({}, state[action.path], { expanded: !state[action.path].expanded }) })
+      return Object.assign({}, state, {
+        [action.path]: Object.assign({}, state[action.path], {
+          expanded: action.value === undefined ? !state[action.path].expanded : action.value
+        })
+      })
     default:
       return state
   }

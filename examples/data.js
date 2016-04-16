@@ -25,7 +25,7 @@ export const data = {
     }
   }),
   largeArray: generate(1000, function(i){
-    return i;
+    //return i;
     return {
       x: i,
       y: 2*i

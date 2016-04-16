@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { AutoSizer, VirtualScroll } from 'react-virtualized'
-import 'react-virtualized/styles.css'
 import * as actions from '../actions'
 import classNames from 'classnames/bind'
 import css from '../styles/JsonTree.scss'
@@ -23,6 +21,12 @@ class JsonTree extends Component {
     update(path, e.target.value)
   }
 
+  componentWillMount(){
+    const { level, initExpandedLevel, data, toggle, path } = this.props
+    if (level < initExpandedLevel && data.type && data.expanded === undefined){
+      toggle(path, true)
+    }
+  }
   renderNode(){
     const { data, path, level } = this.props
     const list = data.childs.map( (key) => {
@@ -52,7 +56,7 @@ class JsonTree extends Component {
       return (
         <div className={nodeClass}>
           <div className={arrowClass} onClick={this.click}></div>
-          <span className={cn({object: true})} onClick={this.click.bind(this)}>{ level ? k : 'root' }: </span>
+          <span className={cn({object: true})} onClick={this.click}>{ k }: </span>
           <span className={cn({bracket: true})}>{'{'}</span>
             { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{'}'}</span>
@@ -85,17 +89,20 @@ class JsonTree extends Component {
 }
 JsonTree.propTypes = {
   path: React.PropTypes.string,
-  level: React.PropTypes.number
+  level: React.PropTypes.number,
+  initExpandedLevel: React.PropTypes.number
 }
 JsonTree.defaultProps = {
   path: 'root',
-  level: 0
+  level: 0,
+  initExpandedLevel: 0
 }
 
 function mapStateToProps(state, props) {
+  const { path = 'root' } = props
   return {
-    data: state[props.path],
-    k: props.path.split('.').pop(),
+    data: state[path],
+    k: path.split('.').pop(),
   }
 }
 

@@ -18,7 +18,7 @@ class App extends Component {
         </thead>
         <tbody>
         <tr>
-          <td><JsonTree path="root"/></td>
+          <td><JsonTree initExpandedLevel={2}/></td>
           <td><JsonView path="root"/></td>
         </tr>
         </tbody>
