@@ -6,11 +6,46 @@ import css from '../styles/JsonTree.scss'
 
 const cn = classNames.bind(css)
 
+class Add extends Component {
+  constructor(props){
+    super(props)
+    this.activate = this.activate.bind(this)
+    this.addClick = this.addClick.bind(this)
+    this.cancelClick = this.cancelClick.bind(this)
+    this.state = {
+      active: false
+    }
+  }
+  activate(){
+    this.setState({ active: true })
+  }
+  addClick(e){
+    this.setState({ active: false })
+    const { submit } = this.props
+    const { key, value } = this.refs
+    submit(key.value, value.value)
+  }
+  cancelClick(e){
+    this.setState({ active: false })
+  }
+  render(){
+    const { active } = this.state
+    return <div className={cn({add: true})}>
+      <span className={cn({hidden: active})} onClick={this.activate}>{'+'}</span>
+      <form className={cn({hidden: !active})}>
+        <input ref='key'></input>: <input ref='value'></input>
+        <button type="button" onClick={this.addClick}>add</button>
+        <button type="button" onClick={this.cancelClick}>cancel</button>
+      </form>
+    </div>
+  }
+}
 class JsonTree extends Component {
   constructor(props){
     super(props)
     this.click = this.click.bind(this)
     this.onChange = this.onChange.bind(this)
+    this.add = this.add.bind(this)
   }
   click(e){
     const { toggle, path } = this.props
@@ -20,7 +55,10 @@ class JsonTree extends Component {
     const { update, path } = this.props
     update(path, e.target.value)
   }
-
+  add(key, value){
+    const { add, path } = this.props
+    add(path, key, value)
+  }
   componentWillMount(){
     const { level, initExpandedLevel, data, toggle, path } = this.props
     if (level < initExpandedLevel && data.type && data.expanded === undefined){
@@ -60,6 +98,7 @@ class JsonTree extends Component {
           <span className={cn({bracket: true})}>{'{'}</span>
             { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{'}'}</span>
+          <Add submit={this.add}/>
         </div>
       )
     }

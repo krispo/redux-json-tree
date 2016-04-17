@@ -10,13 +10,15 @@
     opacity: .5;
     font-style: italic;
   }
-  .bracket { opacity: .5; }
   .leaf {
     input {
       width: 50px;
       height: 12px;
     }
   }
+  .bracket { opacity: .5; }
+  .add { display: inline-block; opacity: .5; color: green; margin: 0px 2px; font-weight: bold; cursor: pointer; }
+  .hidden { display: none; }
 }
 
 /* Arrow */

@@ -1,5 +1,15 @@
-export const UPDATE = 'UPDATE';
-export const TOGGLE = 'TOGGLE';
+export const ADD = 'ADD'
+export const UPDATE = 'UPDATE'
+export const TOGGLE = 'TOGGLE'
+
+export function add(path, key, value){
+  return {
+    type: ADD,
+    path,
+    key,
+    value
+  }
+}
 
 export function update(path, value){
   return {
