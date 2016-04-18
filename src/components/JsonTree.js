@@ -25,17 +25,22 @@ class Add extends Component {
     this.setState({ active: false })
     const { submit } = this.props
     const { key, value } = this.refs
-    submit(key.value, value.value)
+    submit(value.value, key.value)
   }
   cancelClick(e){
     this.setState({ active: false })
   }
   render(){
     const { active } = this.state
+    const { type } = this.props
     return <div className={cn({add: true})}>
       <span className={cn({hidden: active})} onClick={this.activate}>{'+'}</span>
       <form className={cn({hidden: !active})}>
-        <input ref='key' placeholder="key"></input>: <input ref='value' placeholder="JSON"></input>
+
+        <input ref='key' className={cn({hidden: type==='array'})} placeholder="key"></input>
+          <span className={cn({hidden: type==='array'})}>: </span>
+        <input ref='value' placeholder="JSON"></input>
+
         <button type="button" onClick={this.addClick}>add</button>
         <button type="button" onClick={this.cancelClick}>cancel</button>
       </form>
@@ -47,7 +52,8 @@ class JsonTree extends Component {
     super(props)
     this.click = this.click.bind(this)
     this.onChange = this.onChange.bind(this)
-    this.add = this.add.bind(this)
+    this.addObject = this.addObject.bind(this)
+    this.addArray = this.addArray.bind(this)
   }
   click(e){
     const { toggle, path } = this.props
@@ -57,9 +63,13 @@ class JsonTree extends Component {
     const { update, path } = this.props
     update(path, e.target.value)
   }
-  add(key, value){
-    const { add, path } = this.props
-    add(path, key, value)
+  addObject(value, key){
+    const { add_object, path } = this.props
+    add_object(path, value, key)
+  }
+  addArray(value){
+    const { add_array, path } = this.props
+    add_array(path, value)
   }
   componentWillMount(){
     const { level, initExpandedLevel, data, toggle, path } = this.props
@@ -100,7 +110,7 @@ class JsonTree extends Component {
           <span className={cn({bracket: true})}>{'{'}</span>
             { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{'}'}</span>
-          <Add submit={this.add}/>
+          <Add type="object" submit={this.addObject}/>
         </div>
       )
     }
@@ -112,6 +122,7 @@ class JsonTree extends Component {
           <span className={cn({bracket: true})}>{'['}</span>
             { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{']'}</span>
+          <Add type="array" submit={this.addArray}/>
         </div>
       )
     }

@@ -1,37 +1,45 @@
-import { ADD, UPDATE, TOGGLE } from '../actions'
+import { ADD_OBJECT, ADD_ARRAY, UPDATE, TOGGLE } from '../actions'
 import { add } from 'simplifr'
 
 export function reducer(state = {}, action){
-  const { path } = action
+  const { path, value, key } = action
+
   if (typeof path === 'undefined') {
     return state
   }
   switch (action.type) {
-    case ADD:
-      let value = action.value
-      if (!isNaN(+action.value) && isFinite(action.value)) {
-        value = +action.value
-      }
-      /* try to parse string to json */
-      else {
-        try {
-          value = JSON.parse(action.value)
-        } catch (e){}
-      }
-      return add(Object.assign({}, state), action.path, { [action.key]: value })
+    case ADD_OBJECT:
+      return add(Object.assign({}, state), path, { [key]: getValue(value) })
+
+    case ADD_ARRAY:
+      return add(Object.assign({}, state), path, getValue(value))
 
     case UPDATE:
       return Object.assign({}, state, {
-        [action.path]: !isNaN(+action.value) && isFinite(action.value) ? +action.value : action.value
+        [path]: !isNaN(+value) && isFinite(value) ? +value : value
       })
 
     case TOGGLE:
       return Object.assign({}, state, {
-        [action.path]: Object.assign({}, state[action.path], {
-          expanded: action.value === undefined ? !state[action.path].expanded : action.value
+        [path]: Object.assign({}, state[path], {
+          expanded: value === undefined ? !state[path].expanded : value
         })
       })
     default:
       return state
   }
+}
+
+function getValue(value){
+  let _ = value
+  if (!isNaN(+value) && isFinite(value)) {
+    _ = +value
+  }
+  /* try to parse string to json */
+  else {
+    try {
+      _ = JSON.parse(value)
+    } catch (e){}
+  }
+  return _
 }
