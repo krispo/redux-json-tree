@@ -18,6 +18,8 @@ class Add extends Component {
   }
   activate(){
     this.setState({ active: true })
+    this.refs.key.value = ''
+    this.refs.value.value = ''
   }
   addClick(e){
     this.setState({ active: false })
@@ -33,7 +35,7 @@ class Add extends Component {
     return <div className={cn({add: true})}>
       <span className={cn({hidden: active})} onClick={this.activate}>{'+'}</span>
       <form className={cn({hidden: !active})}>
-        <input ref='key'></input>: <input ref='value'></input>
+        <input ref='key' placeholder="key"></input>: <input ref='value' placeholder="JSON"></input>
         <button type="button" onClick={this.addClick}>add</button>
         <button type="button" onClick={this.cancelClick}>cancel</button>
       </form>

@@ -1,5 +1,5 @@
 import { ADD, UPDATE, TOGGLE } from '../actions'
-import { update, desimplify } from 'simplifr'
+import { add } from 'simplifr'
 
 export function reducer(state = {}, action){
   const { path } = action
@@ -8,8 +8,7 @@ export function reducer(state = {}, action){
   }
   switch (action.type) {
     case ADD:
-      let value
-      let data = desimplify(state, action.path)
+      let value = action.value
       if (!isNaN(+action.value) && isFinite(action.value)) {
         value = +action.value
       }
@@ -17,12 +16,9 @@ export function reducer(state = {}, action){
       else {
         try {
           value = JSON.parse(action.value)
-        } catch (e){
-          throw new Error('Not valid JSON...')
-        }
+        } catch (e){}
       }
-      data[action.key] = value
-      return update(Object.assign({}, state), action.path, data)
+      return add(Object.assign({}, state), action.path, { [action.key]: value })
 
     case UPDATE:
       return Object.assign({}, state, {
