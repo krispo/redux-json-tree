@@ -1,5 +1,5 @@
-import { ADD_OBJECT, ADD_ARRAY, UPDATE, TOGGLE } from '../actions'
-import { add } from 'simplifr'
+import { ADD_OBJECT, ADD_ARRAY, UPDATE, REMOVE, TOGGLE } from '../actions'
+import { add, remove } from 'simplifr'
 
 export function reducer(state = {}, action){
   const { path, value, key } = action
@@ -18,6 +18,9 @@ export function reducer(state = {}, action){
       return Object.assign({}, state, {
         [path]: !isNaN(+value) && isFinite(value) ? +value : value
       })
+
+    case REMOVE:
+      return remove(Object.assign({}, state), path)
 
     case TOGGLE:
       return Object.assign({}, state, {

@@ -47,6 +47,14 @@ class Add extends Component {
     </div>
   }
 }
+class Remove extends Component {
+  constructor(props){
+    super(props)
+  }
+  render(){
+    return <span className={cn({remove: true})} onClick={this.props.submit}>{'-'}</span>
+  }
+}
 class JsonTree extends Component {
   constructor(props){
     super(props)
@@ -54,6 +62,7 @@ class JsonTree extends Component {
     this.onChange = this.onChange.bind(this)
     this.addObject = this.addObject.bind(this)
     this.addArray = this.addArray.bind(this)
+    this.remove = this.remove.bind(this)
   }
   click(e){
     const { toggle, path } = this.props
@@ -70,6 +79,10 @@ class JsonTree extends Component {
   addArray(value){
     const { add_array, path } = this.props
     add_array(path, value)
+  }
+  remove(value){
+    const { remove, path } = this.props
+    remove(path)
   }
   componentWillMount(){
     const { level, initExpandedLevel, data, toggle, path } = this.props
@@ -93,6 +106,8 @@ class JsonTree extends Component {
 
   render(){
     const { data, k, level } = this.props
+    if (data === undefined) return false
+
     const t = data.type;
     const nodeClass = cn({
       'redux-json-tree': !this.props.level
@@ -111,6 +126,7 @@ class JsonTree extends Component {
             { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{'}'}</span>
           <Add type="object" submit={this.addObject}/>
+          <Remove submit={this.remove}/>
         </div>
       )
     }
@@ -123,6 +139,7 @@ class JsonTree extends Component {
             { data.expanded ? this.renderNode() : <span className={cn({count: true})}>{data.childs.length}</span>  }
           <span className={cn({bracket: true})}>{']'}</span>
           <Add type="array" submit={this.addArray}/>
+          <Remove submit={this.remove}/>
         </div>
       )
     }
@@ -134,6 +151,7 @@ class JsonTree extends Component {
             value={data}
             onChange={this.onChange}>
           </input>
+          <Remove submit={this.remove}/>
         </span>
       )
     }
