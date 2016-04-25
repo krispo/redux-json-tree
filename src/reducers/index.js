@@ -9,6 +9,7 @@ export function reducer(state = {}, action){
   }
   switch (action.type) {
     case ADD_OBJECT:
+      if (key === '') return state
       return add(Object.assign({}, state), path, { [key]: getValue(value) })
 
     case ADD_ARRAY:
