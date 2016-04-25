@@ -75,10 +75,12 @@ class JsonTree extends Component {
   addObject(value, key){
     const { add_object, path } = this.props
     add_object(path, value, key)
+    this.forceUpdate()
   }
   addArray(value){
     const { add_array, path } = this.props
     add_array(path, value)
+    this.forceUpdate()
   }
   remove(value){
     const { remove, path } = this.props
@@ -146,7 +148,8 @@ class JsonTree extends Component {
     else {
       return (
         <span className={cn({leaf: true})}>
-          <span onClick={this.click}>{ k }: </span>
+          <div className={cn({'redux-json-tree-arrow': true, 'not-visible': true })}></div>
+          <span>{ k }: </span>
           <input
             value={data}
             onChange={this.onChange}>

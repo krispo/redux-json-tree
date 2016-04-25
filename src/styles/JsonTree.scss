@@ -20,6 +20,7 @@
   .add { display: inline-block; opacity: .5; color: green; margin: 0px 2px; font-weight: bold; cursor: pointer; }
   .remove { display: inline-block; opacity: .5; color: red; margin: 0px 2px; font-weight: bold; cursor: pointer; }
   .hidden { display: none; }
+  .not-visible { visibility: hidden; }
 }
 
 /* Arrow */
@@ -48,9 +49,4 @@
     transform: rotateZ(0deg);
     opacity: 1;
   }
-}
-
-.hidden {
-  display: none;
-  visibility: hidden;
 }
