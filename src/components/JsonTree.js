@@ -82,9 +82,16 @@ class JsonTree extends Component {
     add_array(path, value)
     this.forceUpdate()
   }
-  remove(value){
-    const { remove, path } = this.props
-    remove(path)
+  remove(){
+    const { remove_object, remove_array, path, isInArray } = this.props
+    if (isInArray) {
+      let keyPath = path.split('.')
+      let key = keyPath.pop()
+      remove_array(keyPath.join('.'), key)
+    } else {
+      remove_object(path)
+    }
+
   }
   componentWillMount(){
     const { level, initExpandedLevel, data, toggle, path } = this.props
@@ -100,6 +107,7 @@ class JsonTree extends Component {
           {...this.props}
           path={path + '.' + key}
           level={level + 1}
+          isInArray={data.type === 'array'}
         />
       </li>
     });
