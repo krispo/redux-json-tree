@@ -24,9 +24,12 @@ export function reducer(state = {}, action){
       return remove(Object.assign({}, state), path)
 
     case REMOVE_ARRAY:
+      const expanded = state[path].expanded
       let array = desimplify(state, path)
       array.splice(key, 1)
-      return update(Object.assign({}, state), path, array)
+      let newState = update(Object.assign({}, state), path, array)
+      newState[path].expanded = expanded
+      return newState
 
     case TOGGLE:
       return Object.assign({}, state, {
