@@ -64,7 +64,7 @@
 
 	var _data = __webpack_require__(188);
 
-	var _simplifr = __webpack_require__(186);
+	var _simplifr = __webpack_require__(185);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21050,7 +21050,7 @@
 
 	var _src = __webpack_require__(179);
 
-	var _JsonView = __webpack_require__(185);
+	var _JsonView = __webpack_require__(186);
 
 	var _JsonView2 = _interopRequireDefault(_JsonView);
 
@@ -21068,10 +21068,23 @@
 	  function App(props) {
 	    _classCallCheck(this, App);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
+
+	    _this.state = {
+	      useJsonView: true
+	    };
+	    _this.checkboxOnChange = _this.checkboxOnChange.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(App, [{
+	    key: 'checkboxOnChange',
+	    value: function checkboxOnChange() {
+	      this.setState({
+	        useJsonView: !this.state.useJsonView
+	      });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -21091,7 +21104,8 @@
 	            _react2.default.createElement(
 	              'th',
 	              null,
-	              'Source Plain Json'
+	              _react2.default.createElement('input', { type: 'checkbox', checked: this.state.useJsonView, onChange: this.checkboxOnChange }),
+	              ' Source Plain Json'
 	            )
 	          )
 	        ),
@@ -21104,12 +21118,12 @@
 	            _react2.default.createElement(
 	              'td',
 	              null,
-	              _react2.default.createElement(_src.JsonTree, { path: 'root' })
+	              _react2.default.createElement(_src.JsonTree, { path: 'root', initExpandedLevel: 2 })
 	            ),
 	            _react2.default.createElement(
 	              'td',
 	              null,
-	              _react2.default.createElement(_JsonView2.default, { path: 'root' })
+	              _react2.default.createElement(_JsonView2.default, { path: 'root', visible: this.state.useJsonView })
 	            )
 	          )
 	        )
@@ -21143,26 +21157,26 @@
 
 	var _actions = __webpack_require__(181);
 
-	Object.defineProperty(exports, 'UPDATE', {
-	  enumerable: true,
-	  get: function get() {
-	    return _actions.UPDATE;
-	  }
-	});
-	Object.defineProperty(exports, 'update', {
-	  enumerable: true,
-	  get: function get() {
-	    return _actions.update;
-	  }
+	Object.keys(_actions).forEach(function (key) {
+	  if (key === "default") return;
+	  Object.defineProperty(exports, key, {
+	    enumerable: true,
+	    get: function get() {
+	      return _actions[key];
+	    }
+	  });
 	});
 
 	var _reducers = __webpack_require__(184);
 
-	Object.defineProperty(exports, 'reducer', {
-	  enumerable: true,
-	  get: function get() {
-	    return _reducers.reducer;
-	  }
+	Object.keys(_reducers).forEach(function (key) {
+	  if (key === "default") return;
+	  Object.defineProperty(exports, key, {
+	    enumerable: true,
+	    get: function get() {
+	      return _reducers[key];
+	    }
+	  });
 	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -21211,56 +21225,214 @@
 
 	var cn = _bind2.default.bind(_JsonTree2.default);
 
-	var JsonTree = function (_Component) {
-	  _inherits(JsonTree, _Component);
+	var Add = function (_Component) {
+	  _inherits(Add, _Component);
+
+	  function Add(props) {
+	    _classCallCheck(this, Add);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Add).call(this, props));
+
+	    _this.activate = _this.activate.bind(_this);
+	    _this.addClick = _this.addClick.bind(_this);
+	    _this.cancelClick = _this.cancelClick.bind(_this);
+	    _this.state = {
+	      active: false
+	    };
+	    return _this;
+	  }
+
+	  _createClass(Add, [{
+	    key: 'activate',
+	    value: function activate() {
+	      this.setState({ active: true });
+	      this.refs.key.value = '';
+	      this.refs.value.value = '';
+	    }
+	  }, {
+	    key: 'addClick',
+	    value: function addClick(e) {
+	      this.setState({ active: false });
+	      var submit = this.props.submit;
+	      var _refs = this.refs;
+	      var key = _refs.key;
+	      var value = _refs.value;
+
+	      submit(value.value, key.value);
+	    }
+	  }, {
+	    key: 'cancelClick',
+	    value: function cancelClick(e) {
+	      this.setState({ active: false });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var active = this.state.active;
+	      var type = this.props.type;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: cn({ add: true }) },
+	        _react2.default.createElement(
+	          'span',
+	          { className: cn({ hidden: active }), onClick: this.activate },
+	          '+'
+	        ),
+	        _react2.default.createElement(
+	          'form',
+	          { className: cn({ hidden: !active }) },
+	          _react2.default.createElement('input', { ref: 'key', className: cn({ hidden: type === 'array' }), placeholder: 'key' }),
+	          _react2.default.createElement(
+	            'span',
+	            { className: cn({ hidden: type === 'array' }) },
+	            ': '
+	          ),
+	          _react2.default.createElement('input', { ref: 'value', placeholder: 'JSON' }),
+	          _react2.default.createElement(
+	            'button',
+	            { type: 'button', onClick: this.addClick },
+	            'add'
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { type: 'button', onClick: this.cancelClick },
+	            'cancel'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Add;
+	}(_react.Component);
+
+	var Remove = function (_Component2) {
+	  _inherits(Remove, _Component2);
+
+	  function Remove(props) {
+	    _classCallCheck(this, Remove);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Remove).call(this, props));
+	  }
+
+	  _createClass(Remove, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'span',
+	        { className: cn({ remove: true }), onClick: this.props.submit },
+	        '-'
+	      );
+	    }
+	  }]);
+
+	  return Remove;
+	}(_react.Component);
+
+	var JsonTree = function (_Component3) {
+	  _inherits(JsonTree, _Component3);
 
 	  function JsonTree(props) {
 	    _classCallCheck(this, JsonTree);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JsonTree).call(this, props));
+	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(JsonTree).call(this, props));
 
-	    _this.click = _this.click.bind(_this);
-	    _this.onChange = _this.onChange.bind(_this);
-	    _this.state = {
-	      collapsed: false
-	    };
-	    return _this;
+	    _this3.click = _this3.click.bind(_this3);
+	    _this3.onChange = _this3.onChange.bind(_this3);
+	    _this3.addObject = _this3.addObject.bind(_this3);
+	    _this3.addArray = _this3.addArray.bind(_this3);
+	    _this3.remove = _this3.remove.bind(_this3);
+	    return _this3;
 	  }
 
 	  _createClass(JsonTree, [{
 	    key: 'click',
 	    value: function click(e) {
-	      this.setState({
-	        collapsed: !this.state.collapsed
-	      });
+	      var _props = this.props;
+	      var toggle = _props.toggle;
+	      var path = _props.path;
+
+	      toggle(path);
 	    }
 	  }, {
 	    key: 'onChange',
 	    value: function onChange(e) {
-	      var _props = this.props;
-	      var update = _props.update;
-	      var path = _props.path;
-	      var stateKey = _props.stateKey;
+	      var _props2 = this.props;
+	      var update = _props2.update;
+	      var path = _props2.path;
 
-	      update(path, e.target.value, stateKey);
+	      update(path, e.target.value);
+	    }
+	  }, {
+	    key: 'addObject',
+	    value: function addObject(value, key) {
+	      var _props3 = this.props;
+	      var add_object = _props3.add_object;
+	      var path = _props3.path;
+
+	      add_object(path, value, key);
+	      this.forceUpdate();
+	    }
+	  }, {
+	    key: 'addArray',
+	    value: function addArray(value) {
+	      var _props4 = this.props;
+	      var add_array = _props4.add_array;
+	      var path = _props4.path;
+
+	      add_array(path, value);
+	      this.forceUpdate();
+	    }
+	  }, {
+	    key: 'remove',
+	    value: function remove() {
+	      var _props5 = this.props;
+	      var remove_object = _props5.remove_object;
+	      var remove_array = _props5.remove_array;
+	      var path = _props5.path;
+	      var isInArray = _props5.isInArray;
+
+	      if (isInArray) {
+	        var keyPath = path.split('.');
+	        var key = keyPath.pop();
+	        remove_array(keyPath.join('.'), key);
+	      } else {
+	        remove_object(path);
+	      }
+	    }
+	  }, {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var _props6 = this.props;
+	      var level = _props6.level;
+	      var initExpandedLevel = _props6.initExpandedLevel;
+	      var data = _props6.data;
+	      var toggle = _props6.toggle;
+	      var path = _props6.path;
+
+	      if (level < initExpandedLevel && data.type && data.expanded === undefined) {
+	        toggle(path, true);
+	      }
 	    }
 	  }, {
 	    key: 'renderNode',
 	    value: function renderNode() {
-	      var _this2 = this;
+	      var _this4 = this;
 
-	      var _props2 = this.props;
-	      var data = _props2.data;
-	      var path = _props2.path;
-	      var level = _props2.level;
+	      var _props7 = this.props;
+	      var data = _props7.data;
+	      var path = _props7.path;
+	      var level = _props7.level;
 
 	      var list = data.childs.map(function (key) {
 	        return _react2.default.createElement(
 	          'li',
 	          null,
-	          _react2.default.createElement(ConnectedJsonTree, _extends({}, _this2.props, {
+	          _react2.default.createElement(ConnectedJsonTree, _extends({}, _this4.props, {
 	            path: path + '.' + key,
-	            level: level + 1
+	            level: level + 1,
+	            isInArray: data.type === 'array'
 	          }))
 	        );
 	      });
@@ -21273,10 +21445,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _props3 = this.props;
-	      var data = _props3.data;
-	      var k = _props3.k;
-	      var level = _props3.level;
+	      var _props8 = this.props;
+	      var data = _props8.data;
+	      var k = _props8.k;
+	      var level = _props8.level;
+
+	      if (data === undefined) return false;
 
 	      var t = data.type;
 	      var nodeClass = cn({
@@ -21284,7 +21458,7 @@
 	      });
 	      var arrowClass = cn({
 	        'redux-json-tree-arrow': true,
-	        open: !this.state.collapsed
+	        open: data.expanded
 	      });
 
 	      if (t === 'object') {
@@ -21294,8 +21468,8 @@
 	          _react2.default.createElement('div', { className: arrowClass, onClick: this.click }),
 	          _react2.default.createElement(
 	            'span',
-	            { className: cn({ object: true }), onClick: this.click.bind(this) },
-	            level ? k : 'root',
+	            { className: cn({ object: true }), onClick: this.click },
+	            k,
 	            ': '
 	          ),
 	          _react2.default.createElement(
@@ -21303,16 +21477,18 @@
 	            { className: cn({ bracket: true }) },
 	            '{'
 	          ),
-	          this.state.collapsed ? _react2.default.createElement(
+	          data.expanded ? this.renderNode() : _react2.default.createElement(
 	            'span',
 	            { className: cn({ count: true }) },
 	            data.childs.length
-	          ) : this.renderNode(),
+	          ),
 	          _react2.default.createElement(
 	            'span',
 	            { className: cn({ bracket: true }) },
 	            '}'
-	          )
+	          ),
+	          _react2.default.createElement(Add, { type: 'object', submit: this.addObject }),
+	          _react2.default.createElement(Remove, { submit: this.remove })
 	        );
 	      } else if (t === 'array') {
 	        return _react2.default.createElement(
@@ -21330,30 +21506,34 @@
 	            { className: cn({ bracket: true }) },
 	            '['
 	          ),
-	          this.state.collapsed ? _react2.default.createElement(
+	          data.expanded ? this.renderNode() : _react2.default.createElement(
 	            'span',
 	            { className: cn({ count: true }) },
 	            data.childs.length
-	          ) : this.renderNode(),
+	          ),
 	          _react2.default.createElement(
 	            'span',
 	            { className: cn({ bracket: true }) },
 	            ']'
-	          )
+	          ),
+	          _react2.default.createElement(Add, { type: 'array', submit: this.addArray }),
+	          _react2.default.createElement(Remove, { submit: this.remove })
 	        );
 	      } else {
 	        return _react2.default.createElement(
 	          'span',
 	          { className: cn({ leaf: true }) },
+	          _react2.default.createElement('div', { className: cn({ 'redux-json-tree-arrow': true, 'not-visible': true }) }),
 	          _react2.default.createElement(
 	            'span',
-	            { onClick: this.click },
+	            null,
 	            k,
 	            ': '
 	          ),
 	          _react2.default.createElement('input', {
 	            value: data,
-	            onChange: this.onChange })
+	            onChange: this.onChange }),
+	          _react2.default.createElement(Remove, { submit: this.remove })
 	        );
 	      }
 	    }
@@ -21364,17 +21544,22 @@
 
 	JsonTree.propTypes = {
 	  path: _react2.default.PropTypes.string,
-	  level: _react2.default.PropTypes.number
+	  level: _react2.default.PropTypes.number,
+	  initExpandedLevel: _react2.default.PropTypes.number
 	};
 	JsonTree.defaultProps = {
 	  path: 'root',
-	  level: 0
+	  level: 0,
+	  initExpandedLevel: 0
 	};
 
 	function mapStateToProps(state, props) {
+	  var _props$path = props.path;
+	  var path = _props$path === undefined ? 'root' : _props$path;
+
 	  return {
-	    data: state[props.path],
-	    k: props.path.split('.').pop()
+	    data: state[path],
+	    k: path.split('.').pop()
 	  };
 	}
 
@@ -21390,12 +21575,62 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.add_object = add_object;
+	exports.add_array = add_array;
 	exports.update = update;
+	exports.remove_object = remove_object;
+	exports.remove_array = remove_array;
+	exports.toggle = toggle;
+	var ADD_OBJECT = exports.ADD_OBJECT = 'ADD_OBJECT';
+	var ADD_ARRAY = exports.ADD_ARRAY = 'ADD_ARRAY';
 	var UPDATE = exports.UPDATE = 'UPDATE';
+	var REMOVE_OBJECT = exports.REMOVE_OBJECT = 'REMOVE_OBJECT';
+	var REMOVE_ARRAY = exports.REMOVE_ARRAY = 'REMOVE_ARRAY';
+	var TOGGLE = exports.TOGGLE = 'TOGGLE';
+
+	function add_object(path, value, key) {
+	  return {
+	    type: ADD_OBJECT,
+	    path: path,
+	    key: key,
+	    value: value
+	  };
+	}
+
+	function add_array(path, value) {
+	  return {
+	    type: ADD_ARRAY,
+	    path: path,
+	    value: value
+	  };
+	}
 
 	function update(path, value) {
 	  return {
 	    type: UPDATE,
+	    path: path,
+	    value: value
+	  };
+	}
+
+	function remove_object(path) {
+	  return {
+	    type: REMOVE_OBJECT,
+	    path: path
+	  };
+	}
+
+	function remove_array(path, key) {
+	  return {
+	    type: REMOVE_ARRAY,
+	    path: path,
+	    key: key
+	  };
+	}
+
+	function toggle(path, value) {
+	  return {
+	    type: TOGGLE,
 	    path: path,
 	    value: value
 	  };
@@ -21460,7 +21695,7 @@
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"redux-json-tree":"redux-json-tree","object":"object","array":"array","count":"count","bracket":"bracket","leaf":"leaf","redux-json-tree-arrow":"redux-json-tree-arrow","open":"open","hidden":"hidden"};
+	module.exports = {"redux-json-tree":"redux-json-tree","object":"object","array":"array","count":"count","leaf":"leaf","bracket":"bracket","add":"add","remove":"remove","hidden":"hidden","not-visible":"not-visible","redux-json-tree-arrow":"redux-json-tree-arrow","open":"open"};
 
 /***/ },
 /* 184 */
@@ -21475,88 +21710,68 @@
 
 	var _actions = __webpack_require__(181);
 
+	var _simplifr = __webpack_require__(185);
+
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 	function reducer() {
 	  var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 	  var action = arguments[1];
 	  var path = action.path;
+	  var value = action.value;
+	  var key = action.key;
+
 
 	  if (typeof path === 'undefined') {
 	    return state;
 	  }
 	  switch (action.type) {
+	    case _actions.ADD_OBJECT:
+	      if (key === '') return state;
+	      return (0, _simplifr.add)(Object.assign({}, state), path, _defineProperty({}, key, getValue(value)));
+
+	    case _actions.ADD_ARRAY:
+	      return (0, _simplifr.add)(Object.assign({}, state), path, getValue(value));
+
 	    case _actions.UPDATE:
-	      return Object.assign({}, state, _defineProperty({}, action.path, isNaN(+action.value) ? action.value : +action.value));
+	      return Object.assign({}, state, _defineProperty({}, path, !isNaN(+value) && isFinite(value) ? +value : value));
+
+	    case _actions.REMOVE_OBJECT:
+	      return (0, _simplifr.remove)(Object.assign({}, state), path);
+
+	    case _actions.REMOVE_ARRAY:
+	      var expanded = state[path].expanded;
+	      var array = (0, _simplifr.desimplify)(state, path);
+	      array.splice(key, 1);
+	      var newState = (0, _simplifr.update)(Object.assign({}, state), path, array);
+	      newState[path].expanded = expanded;
+	      return newState;
+
+	    case _actions.TOGGLE:
+	      return Object.assign({}, state, _defineProperty({}, path, Object.assign({}, state[path], {
+	        expanded: value === undefined ? !state[path].expanded : value
+	      })));
 	    default:
 	      return state;
 	  }
 	}
 
-/***/ },
-/* 185 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _reactRedux = __webpack_require__(159);
-
-	var _simplifr = __webpack_require__(186);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var JsonView = function (_Component) {
-	  _inherits(JsonView, _Component);
-
-	  function JsonView(props) {
-	    _classCallCheck(this, JsonView);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(JsonView).call(this, props));
+	function getValue(value) {
+	  var _ = value;
+	  if (!isNaN(+value) && isFinite(value)) {
+	    _ = +value;
 	  }
-
-	  _createClass(JsonView, [{
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'pre',
-	          null,
-	          JSON.stringify((0, _simplifr.desimplify)(this.props.data, this.props.path), null, 2)
-	        )
-	      );
+	  /* try to parse string to json */
+	  else {
+	      try {
+	        _ = JSON.parse(value);
+	      } catch (e) {}
 	    }
-	  }]);
-
-	  return JsonView;
-	}(_react.Component);
-
-	function mapStateToProps(state, props) {
-	  return { data: state };
+	  return _;
 	}
 
-	var ConnectedJsonView = (0, _reactRedux.connect)(mapStateToProps)(JsonView);
-	exports.default = ConnectedJsonView;
-
 /***/ },
-/* 186 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* Simplifr, v0.2.0 */
@@ -21599,6 +21814,7 @@
 	    else if (node.type === 'object') {
 	      var keys = Object.keys(obj);
 	      keys.forEach(function(key){
+	        if (node.childs.indexOf(key) > -1) return;
 	        node.childs.push(key);
 	        simplifyNode(data, path + dilimiter + key, obj[key], dilimiter);
 	      });
@@ -21750,6 +21966,70 @@
 	}));
 
 /***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactRedux = __webpack_require__(159);
+
+	var _simplifr = __webpack_require__(185);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var JsonView = function (_Component) {
+	  _inherits(JsonView, _Component);
+
+	  function JsonView(props) {
+	    _classCallCheck(this, JsonView);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(JsonView).call(this, props));
+	  }
+
+	  _createClass(JsonView, [{
+	    key: 'render',
+	    value: function render() {
+	      if (!this.props.visible) return null;
+
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'pre',
+	          null,
+	          JSON.stringify((0, _simplifr.desimplify)(this.props.data, this.props.path), null, 2)
+	        )
+	      );
+	    }
+	  }]);
+
+	  return JsonView;
+	}(_react.Component);
+
+	function mapStateToProps(state, props) {
+	  return { data: state };
+	}
+
+	var ConnectedJsonView = (0, _reactRedux.connect)(mapStateToProps)(JsonView);
+	exports.default = ConnectedJsonView;
+
+/***/ },
 /* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -21820,7 +22100,7 @@
 	    };
 	  }),
 	  largeArray: generate(1000, function (i) {
-	    return i;
+	    //return i;
 	    return {
 	      x: i,
 	      y: 2 * i

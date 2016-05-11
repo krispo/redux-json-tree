@@ -13,12 +13,34 @@
   opacity: .5;
   font-style: italic;
 }
-.redux-json-tree .bracket {
-  opacity: .5;
-}
 .redux-json-tree .leaf input {
   width: 50px;
   height: 12px;
+}
+.redux-json-tree .bracket {
+  opacity: .5;
+}
+.redux-json-tree .add {
+  display: inline-block;
+  opacity: .5;
+  color: green;
+  margin: 0px 2px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.redux-json-tree .remove {
+  display: inline-block;
+  opacity: .5;
+  color: red;
+  margin: 0px 2px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.redux-json-tree .hidden {
+  display: none;
+}
+.redux-json-tree .not-visible {
+  visibility: hidden;
 }
 
 /* Arrow */
@@ -46,9 +68,4 @@
   -webkit-transform: rotateZ(0deg);
   transform: rotateZ(0deg);
   opacity: 1;
-}
-
-.hidden {
-  display: none;
-  visibility: hidden;
 }
