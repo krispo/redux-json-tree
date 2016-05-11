@@ -7,6 +7,8 @@ class JsonView extends Component {
     super(props)
   }
   render(){
+    if (!this.props.visible) return null
+
     return (
       <div>
         <pre>{JSON.stringify(desimplify(this.props.data, this.props.path), null, 2)}</pre>

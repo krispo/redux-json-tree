@@ -6,6 +6,15 @@ import JsonView from './JsonView'
 class App extends Component {
   constructor(props){
     super(props)
+    this.state = {
+      useJsonView: true
+    }
+    this.checkboxOnChange = this.checkboxOnChange.bind(this)
+  }
+  checkboxOnChange(){
+    this.setState({
+      useJsonView: !this.state.useJsonView
+    })
   }
   render(){
     return (
@@ -13,13 +22,13 @@ class App extends Component {
         <thead>
           <tr>
             <th>Redux-Json-Tree</th>
-            <th>Source Plain Json</th>
+            <th><input type="checkbox" checked={this.state.useJsonView} onChange={this.checkboxOnChange}/> Source Plain Json</th>
           </tr>
         </thead>
         <tbody>
         <tr>
           <td><JsonTree path="root" initExpandedLevel={2}/></td>
-          <td><JsonView path="root"/></td>
+          <td><JsonView path="root" visible={this.state.useJsonView}/></td>
         </tr>
         </tbody>
       </table>
